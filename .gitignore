@@ -1,19 +1,7 @@
 
 .Rhistory
 
-*.pper
-
-.Rproj.user/B498204C/persistent-state
-
-.Rproj.user/B498204C/
-
-.Rproj.user/shared/notebooks/6AE165C1-reproducibility_notebook/1/s/c455qabnpzfu9/
-
-.Rproj.user/shared/notebooks/6AE165C1-reproducibility_notebook/1/s/c49rebxpj13ao/
-
-.Rproj.user/shared/notebooks/6AE165C1-reproducibility_notebook/1/s/c50dojx4qrlt9/
-
-.Rproj.user/shared/notebooks/
+.Rproj.user/
 
 *.Rproj
 
