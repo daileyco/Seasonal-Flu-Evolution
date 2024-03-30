@@ -16,7 +16,7 @@ summarize_Tree <- function(tree){
                       imbalance.collessnorm = NA, 
                       imbalance.sackin = NA, 
                       imbalance.blum = NA, 
-                      cherries = NA, 
+                      # cherries = NA, 
                       pd.PD = NA, 
                       pd.SR = NA,
                       mpd = NA, 
@@ -30,7 +30,7 @@ summarize_Tree <- function(tree){
                             imbalance.sackin = try(tree_imbalance(tree, "Sackin")), 
                             imbalance.blum = try(tree_imbalance(tree, "Blum")), 
                             
-                            cherries = as.numeric(try(gsub("[A-Za-z[:space:][:punct:]]", "", capture.output(cherry(tree))[which(grepl("Number of cherries: ", capture.output(cherry(tree))))]))), 
+                            # cherries = as.numeric(try(gsub("[A-Za-z[:space:][:punct:]]", "", capture.output(cherry(tree))[which(grepl("Number of cherries: ", capture.output(cherry(tree))))]))), 
                             
                             pd = try(pd(matrix(data = c(1), 
                                            nrow = 1, 
@@ -43,8 +43,13 @@ summarize_Tree <- function(tree){
                                              dimnames = list("all", tree$tip.label)), 
                                       cophenetic(tree))),
                             
-                            branchlength.sum = try(sum(tree$edge.length)))
+                            branchlength.sum = try(sum(tree$edge.length)), 
+                            avgladder = try(phyloTop::avgLadder(tree)))
 
+  
+  treesummary <- cbind(treesummary,
+                       data.frame(t(treeCentrality::computeNetworkStats(tree))), 
+                       data.frame(t(treeCentrality::computeBasicStats(tree))))
   
   
   return(treesummary)

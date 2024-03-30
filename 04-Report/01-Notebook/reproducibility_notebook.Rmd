@@ -13,9 +13,11 @@ Assess the spatio-temporal variation in seasonal influenza evolution
 
 
 
-# HA Sequences
+# Census of Available Sequences
 
 
+
+Feasibility check to see how many sequences available given stratifications
 ```{r}
 source("./02-Scripts/01-Data-Wrangling/process_Data_Flu_Metadata.R")
 ```
@@ -24,13 +26,13 @@ source("./02-Scripts/01-Data-Wrangling/process_Data_Flu_Metadata.R")
 
 ```{r}
 
-load("./03-Output/01-Tables/census.rdata")
-library(dplyr)
-library(flextable)
-
-census %>% flextable() %>% autofit()
-
-census.by.state %>% flextable() %>% autofit()
+# load("./03-Output/01-Tables/census.rdata")
+# library(dplyr)
+# library(flextable)
+# 
+# census %>% flextable() %>% autofit()
+# 
+# census.by.state %>% flextable() %>% autofit()
 ```
 
 
@@ -39,7 +41,32 @@ census.by.state %>% flextable() %>% autofit()
 
 
 
+# Data Management
 
+
+## Commuting Data
+
+```{r}
+source("./02-Scripts/01-Data-Wrangling/process_Data_ACS.R")
+```
+
+
+
+
+## Spatial Data
+
+```{r}
+source("./02-Scripts/01-Data-Wrangling/process_Data_Spatial.R")
+```
+
+
+
+
+
+
+## HA Gene Sequences
+
+take sequence data from lambo and compile to single fasta files for each subtype.
 
 ```{r}
 source("./02-Scripts/01-Data-Wrangling/prep_Files_FASTA.R")
@@ -47,6 +74,73 @@ source("./02-Scripts/01-Data-Wrangling/prep_Files_FASTA.R")
 
 
 
+fasta files were sent to author LD for cleaning / trimming
+
+
+resulting trimmed and aligned sequences are read into r and rewritten to many fasta files corresponding to the stratifications of season and state and subtype;
+
+note only strata with at least 4 sequences have fasta files
+
+<!-- note resampling of sequences in strata with more than 15 sequences -->
+<!-- - number of resamplings scales with number of sequences -->
+<!-- - number of sequences in each resampled set is random 4:15 -->
+
+```{r}
+source("./02-Scripts/01-Data-Wrangling/prep_Files_FASTA2.R")
+```
+
+
+stratum-specific fasta files (sets of sequences) are piped to IQTREE software for maximum likelihood estimation of a phylogeny; one stratum = one tree.
+
+
+```{r}
+source("./02-Scripts/04-Analysis/reconstruct_Phylogenies_with_IQTREE.R")
+```
+
+
+read and combine iqtree tree and log files
+
+```{r}
+source("./02-Scripts/01-Data-Wrangling/process_Data_IQTREE.R")
+```
+
+
+
+```{r}
+#may deprecate next script, need to check summary stats ok
+source("./02-Scripts/01-Data-Wrangling/process_Data_ACE.R")
+```
+
+
+
+
+<!-- root tree takes the newick tree string and tip labels containing dates and roots the tree -->
+summarize tree takes a tree (rooted or errors) and calculates several tree shape statistics
+
+the script calls both on each tree creating a dataframe with tree shape stats and metadata
+
+```{r}
+#helper functions
+#"./02-Scripts/02-Helper-Functions/root_Tree.R"
+#"./02-Scripts/02-Helper-Functions/summarize_Tree.R"
+
+# source("./02-Scripts/01-Data-Wrangling/generate_Tree_Summaries.R")
+source("./02-Scripts/01-Data-Wrangling/generate_Tree_Summaries2.R")
+```
+
+
+
+the following script compiles, cleans, and partitions the tree summaries into four datasets
+- summaries of trees using all available sequences
+<!-- - summaries of trees including resampled sets -->
+<!-- - summaries of trees with resampled averages (one tree per metadata stratum) -->
+<!-- - the previous with averages but also a median imputed value for missing data (strata) for subtype H3 (others too extensively missing) -->
+- trees/subtrees in season
+
+
+```{r}
+source("./02-Scripts/01-Data-Wrangling/process_Data_Tree_Summaries.R")
+```
 
 
 
@@ -54,6 +148,55 @@ source("./02-Scripts/01-Data-Wrangling/prep_Files_FASTA.R")
 
 
 
+# Visualization I
+make a few summary tables
+
+```{r}
+#helper function
+#"./02-Scripts/02-Helper-Functions/tabulator.R"
+
+source("./02-Scripts/03-Visualization/generate_Tables_Tree_Summaries.R")
+```
+
+format the tables
+
+
+```{r}
+# source("./02-Scripts/03-Visualization/generate_Flextables_Tree_Summaries.R")
+source("./02-Scripts/03-Visualization/generate_Flextables_SummaryTables.R")
+```
+
+
+
+
+profile of MPD across time; separate lines for each state
+```{r}
+source("./02-Scripts/03-Visualization/generate_Figures_TimeSeries.R")
+```
+
+```{r}
+source("./02-Scripts/03-Visualization/generate_Figures_TimeScalingBoxplots.R")
+```
+
+
+
+# Data Management II
+
+
+
+<!-- temporal lags of tree shape stats calculated here, 1&2 seasons lag -->
+
+<!-- calculate spatial lags (and spatiotemporal lags) -->
+<!-- - border sharing neighbors average -->
+<!-- - commuting neighbors average weighted by undirected commuter flow volume -->
+
+
+<!-- ```{r} -->
+<!-- #helper function -->
+<!-- #"./02-Scripts/02-Helper-Functions/generate_Spatial_Lag_Variable.R" -->
+
+<!-- source("./02-Scripts/01-Data-Wrangling/process_Data_Tree_Summaries2.R") -->
+<!-- ``` -->
 
 
 
@@ -61,34 +204,33 @@ source("./02-Scripts/01-Data-Wrangling/prep_Files_FASTA.R")
 
 
 
+# Correlation Analysis
+
+need to adjust correlations script to use all available data, it will
+
+1 take a slice sample of data for subtype season location
+2 generate multiple temporal lags of variables
+3 generate spatial and spatiotemporal lags of variables
+4 compute correlation coefficients
+5 store in dataframe
+6 repeat 99+ times using new slice sample
+7 summarize correlation coefficients, median (2.5%, 97.5%)
 
 
 
 
 
+<!-- look at correlations between  -->
+<!-- - tree shape stats (removed) -->
+<!-- - subtypes -->
+<!-- - temporal autocorrelation of mpd -->
+<!-- - temporal subtype crosscorrelation of mpd -->
+<!-- - spatiotemporal autocorrelation of mpd -->
+<!-- - spatiotemporal subtype crosscorrelation of mpd -->
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<!-- ```{r} -->
+<!-- source("./02-Scripts/04-Analysis/compute_Correlations.R") -->
+<!-- ``` -->
 
 
 

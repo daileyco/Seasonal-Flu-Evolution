@@ -6,7 +6,7 @@
 load("./01-Data/01-Processed-Data/metadata_us1020.rds")
 
 library(dplyr)
-
+library(lubridate)
 
 fasta.files <- c("./01-Data/01-Processed-Data/Sequences/BVic_n5778.mo.fasta", 
                  "./01-Data/01-Processed-Data/Sequences/BYam_n4937.mo.fasta", 
@@ -56,7 +56,18 @@ for(i in 1:length(fasta.files)){
 
 seqs.df <- seqs.df.list %>% 
   bind_rows() %>%
-  mutate(Subtype = ifelse(Subtype%in%c("B"), paste0(Subtype, substr(Lineage,1,3)), ifelse(grepl("H1", Subtype), "H1", ifelse(grepl("H3", Subtype), "H3", NA)))) %>%
+  mutate(Subtype = ifelse(Subtype%in%c("B"), 
+                          paste0(Subtype, substr(Lineage,1,3)), 
+                          ifelse(grepl("H1", Subtype), 
+                                 "H1", 
+                                 ifelse(grepl("H3", Subtype), 
+                                        "H3", 
+                                        NA))), 
+         cy = year(Collection_Date), 
+         ew = epiweek(Collection_Date),
+         Collection_season = case_when(#ew<30 & ew>18 ~ "off season",
+                                       ew<30 ~ paste0(cy-1, "-", cy), 
+                                       TRUE ~ paste0(cy, "-", cy+1)),) %>%
   filter(!duplicated(ID))
 # View(meta.df.us1020[which(!meta.df.us1020$Isolate_Id%in%seqs.df$ID),])
 
@@ -91,7 +102,7 @@ combos <- expand.grid(subtype = subtypes,
                       season = seasons)
 
 
-set.seed(20230530)
+# set.seed(20230530)
 
 
 for(ii in 1:nrow(combos)){
@@ -109,36 +120,50 @@ for(ii in 1:nrow(combos)){
   
   if(nrow(these.seqs)>3){
     
-    if(nrow(these.seqs)>15){
-      
-      for(iii in 1:{ceiling(nrow(these.seqs)/15)*2}){
-        
-        this.subsample <- sample(1:nrow(these.seqs), 15, replace = TRUE)
-        
-        these.seqs.resampled <- these.seqs[this.subsample,]
-        
-        for(j in 1:length(this.subsample)){
-          these.seqs.resampled$Label[j] <- sub("\\|", paste0("0", j, "\\|"), these.seqs.resampled$Label[j])
-        }
-        
-        
-        write.table(these.seqs.resampled, 
-                    file=paste0("./01-Data/01-Processed-Data/Sequences/", 
-                                combos$subtype[ii], "/", 
-                                combos$subtype[ii], "_", 
-                                combos$season[ii], "_", 
-                                combos$location[ii], 
-                                "_n", nrow(these.seqs), "_rep", iii, ".fasta"), 
-                    sep="\n", 
-                    col.names = FALSE, 
-                    row.names = FALSE, 
-                    quote=FALSE)
-        
-        
-      }
-      
-      
-    }else{
+    # if(nrow(these.seqs)>15){
+    #   
+    #   write.table(these.seqs, 
+    #               file=paste0("./01-Data/01-Processed-Data/Sequences/", 
+    #                           combos$subtype[ii], "/", 
+    #                           combos$subtype[ii], "_", 
+    #                           combos$season[ii], "_", 
+    #                           combos$location[ii], 
+    #                           "_n", nrow(these.seqs), "_rep0", ".fasta"), 
+    #               sep="\n", 
+    #               col.names = FALSE, 
+    #               row.names = FALSE, 
+    #               quote=FALSE)
+    #   
+    #   
+    #   
+    #   for(iii in 1:{ceiling(nrow(these.seqs)/15)*2}){
+    #     
+    #     this.subsample <- sample(1:nrow(these.seqs), sample(4:15, 1), replace = TRUE)
+    #     
+    #     these.seqs.resampled <- these.seqs[this.subsample,]
+    #     
+    #     for(j in 1:length(this.subsample)){
+    #       these.seqs.resampled$Label[j] <- sub("\\|", paste0("0", j, "\\|"), these.seqs.resampled$Label[j])
+    #     }
+    #     
+    #     
+    #     write.table(these.seqs.resampled, 
+    #                 file=paste0("./01-Data/01-Processed-Data/Sequences/", 
+    #                             combos$subtype[ii], "/", 
+    #                             combos$subtype[ii], "_", 
+    #                             combos$season[ii], "_", 
+    #                             combos$location[ii], 
+    #                             "_n", length(this.subsample), "_rep", iii, ".fasta"), 
+    #                 sep="\n", 
+    #                 col.names = FALSE, 
+    #                 row.names = FALSE, 
+    #                 quote=FALSE)
+    #     
+    #     
+    #   }
+    #   
+    #   
+    # }else{
       write.table(these.seqs, 
                 file=paste0("./01-Data/01-Processed-Data/Sequences/", 
                             combos$subtype[ii], "/", 
@@ -151,7 +176,7 @@ for(ii in 1:nrow(combos)){
                 row.names = FALSE, 
                 quote=FALSE)
       
-    }
+    # }
     
     
   }
