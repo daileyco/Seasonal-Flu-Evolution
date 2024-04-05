@@ -2,11 +2,14 @@
 
 
 ## load data
-# load("./01-Data/02-Analytic-Data/smalltrees_summaries.rdata")
+
+load("./01-Data/02-Analytic-Data/correlations_subset1520.rds")
+
+cordf1520 <- cordf
+
 load("./01-Data/02-Analytic-Data/correlations.rds")
 
-# load("./01-Data/02-Analytic-Data/treesdf.rds")
-# load("./01-Data/02-Analytic-Data/mycorrs.rds")
+
 
 ## helper functions
 
@@ -32,6 +35,23 @@ cors <- cordf %>%
          tlag = ifelse(grepl("tlag", y), sub(".*tlag([0-9]+).*", "\\1", y), 0)) %>%
   select(-x, -y) %>%
   relocate(matches("cor"), .after = tlag)
+
+
+cors1520 <- cordf1520 %>%
+  
+  mutate(across(c(x,y), 
+                list(var = ~sub("_.*", "", .x), 
+                     subtype = ~sub(".*_", "", .x)), 
+                .names = "{.fn}_{.col}"), 
+         slagtype = case_when(grepl("nlag", y) ~ "Network", 
+                              grepl("slag", y) ~ "Spatial", 
+                              TRUE ~ "Auto"),
+         slag = ifelse(!slagtype%in%c("Auto"), sub(".*[s|n]lag([0-9]+).*", "\\1", y), 0), 
+         tlag = ifelse(grepl("tlag", y), sub(".*tlag([0-9]+).*", "\\1", y), 0)) %>%
+  select(-x, -y) %>%
+  relocate(matches("cor"), .after = tlag)
+
+
 
 
 ## make into neat table
@@ -62,6 +82,32 @@ table.cors <- cors %>%
   setNames(., nm = sub("_.*", "", names(.)))
   
   
+table.cors1520 <- cors1520 %>%
+  mutate(cor = ifelse(cor50==1, 
+                      1, 
+                      paste0(round(cor50,3), " (", round(cor2.5, 3), ", ", round(cor97.5, 3), ")"))) %>%
+  select(-cor50, -cor2.5, -cor97.5) %>%
+  pivot_wider(names_from = c(subtype_y, tlag), values_from = cor) %>%
+  rename(Subtype = subtype_x, 
+         `Spatial Lag Type` = slagtype, 
+         `Spatial Lag` = slag) %>%
+  select(-var_x, -var_y) %>%
+  add_row(., 
+          names(.) %>% 
+            (\(x){
+              case_when(grepl("_", x) ~ sub(".*_", "", x), 
+                        TRUE ~ NA) %>% 
+                setNames(., x) %>% 
+                ifelse(.==0 & !duplicated(.), 
+                       paste0("Tlag = ", .), 
+                       .)
+            }) %>% 
+            t() %>% 
+            as.data.frame(), 
+          .before = 1) %>%
+  select(1:3, order(names(.)[4:ncol(.)])+3) %>%
+  setNames(., nm = sub("_.*", "", names(.)))
+
 
 
 
@@ -109,10 +155,12 @@ table.cors <- cors %>%
 
 ## save
 save(cors, 
-     file = "./01-Data/02-Analytic-Data/correlations_clean.rds")
+     cors1520, 
+     file = "./01-Data/02-Analytic-Data/correlations_clean.rdata")
 
-save(table.cors,
-     file = "./03-Output/01-Tables/tables_cors.rds")
+save(table.cors, 
+     table.cors1520,
+     file = "./03-Output/01-Tables/tables_cors.rdata")
 
 
 ## clean environment

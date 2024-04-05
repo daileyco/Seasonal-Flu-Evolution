@@ -178,6 +178,11 @@ source("./02-Scripts/03-Visualization/generate_Figures_TimeSeries.R")
 source("./02-Scripts/03-Visualization/generate_Figures_TimeScalingBoxplots.R")
 ```
 
+```{r}
+source("./02-Scripts/03-Visualization/generate_Figures_Coverage_Heatmap.R")
+source("./02-Scripts/03-Visualization/generate_Figures_Coverage_Heatmap_Sequences.R")
+```
+
 
 
 # Data Management II
@@ -217,6 +222,19 @@ need to adjust correlations script to use all available data, it will
 7 summarize correlation coefficients, median (2.5%, 97.5%)
 
 
+
+```{r}
+# #helper function
+# source("./02-Scripts/02-Helper-Functions/generate_Spatial_Lag_Variable.R")
+
+source("./02-Scripts/04-Analysis/correlate_Smalltrees.R")
+source("./02-Scripts/04-Analysis/correlate_Smalltrees_subset1520.R")
+```
+
+
+```{r}
+source("./02-Scripts/03-Visualization/generate_Figures_Cors_Heatmap.R")
+```
 
 
 

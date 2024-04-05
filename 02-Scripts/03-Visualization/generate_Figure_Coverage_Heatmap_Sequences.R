@@ -1,7 +1,8 @@
-# Figure heatmap showing proportion of cumulative seasonal ILI by week and state
+# Figure heatmap
 
 
 ## load data
+load("./01-Data/01-Processed-Data/sequences_freqs.rds")
 load("./01-Data/02-Analytic-Data/smalltrees_summaries.rdata")
 
 
@@ -11,17 +12,30 @@ library(tidyr)
 
 ## figure set up
 
-sts <- smalltrees.df %>% 
-  group_by(subtype, season, location) %>% 
-  summarise(n = sum(!is.na(mpd))) %>% 
-  ungroup() %>% 
-  mutate(n = ifelse(n==0,NA,n)
-         # ,
-         # int = cut(n, mybreaks)
-         )
+seqs <- seqs.df %>%
+  full_join(., 
+            trees.full %>% 
+              filter(!is.na(tree.newick)) %>% 
+              select(subtype, season, location, tree.newick, errorts), 
+            by = c("subtype", "season", "location")) %>%
+  mutate(maketree = !is.na(tree.newick), 
+         havetree = maketree & is.na(errorts))
 
 
-mybreaks <- c(0:14,19,24,29,max(sts$n, na.rm=T))
+
+
+
+# sts <- smalltrees.df %>% 
+#   group_by(subtype, season, location) %>% 
+#   summarise(n = sum(!is.na(mpd))) %>% 
+#   ungroup() %>% 
+#   mutate(n = ifelse(n==0,NA,n)
+#          # ,
+#          # int = cut(n, mybreaks)
+#          )
+
+
+mybreaks <- c(0,3,9,19,29,39,49,99,199,299,max(seqs$n, na.rm=T))
 
 
 
@@ -37,7 +51,7 @@ y <- data.frame(region = unique(smalltrees.df$location)) %>%
   mutate(number = row_number())
 
 
-z <- sts %>%
+z <- seqs %>%
   select(region=location, season, subtype, n) %>%
   arrange(desc(region)) %>%
   pivot_wider(names_from = c(region), values_from = n) %>%
@@ -53,6 +67,21 @@ z <- sts %>%
          }))
 
 
+z2 <- seqs %>%
+  mutate(havetree = ifelse(havetree, NA, ifelse(!maketree, NA, havetree))) %>%
+  select(region=location, season, subtype, havetree) %>%
+  arrange(desc(region)) %>%
+  pivot_wider(names_from = c(region), values_from = havetree) %>%
+  arrange(season) %>%
+  as.data.frame() %>% 
+  split(~subtype) %>% 
+  lapply(., 
+         (\(x){
+           rownames(x) <- x$season
+           x %>% 
+             select(-season,-subtype) %>% 
+             as.matrix()
+         }))
 
 
 
@@ -83,7 +112,7 @@ y <- full_join(y, statecodes)
 
 
 ## figure
-svg(filename = "./03-Output/02-Figures/tree_coverage_heatmap.svg", width = 8, height = 8, pointsize = 10)
+svg(filename = "./03-Output/02-Figures/seqs_coverage_heatmap.svg", width = 8, height = 8, pointsize = 10)
 
 
 
@@ -99,8 +128,19 @@ for(i in 1:4){
         xlab = "", 
         ylab = "",
         axes = F, 
-        col = viridis::viridis(length(mybreaks)-1), 
+        col = c("grey", viridis::viridis(length(mybreaks)-2)), 
         breaks = mybreaks)
+  
+  image(x=x$number, 
+        y=y$number, 
+        z=z2[[i]], 
+        xlab = "", 
+        ylab = "",
+        axes = F, 
+        col = rgb(1,0,0,1),
+        add = TRUE)
+
+  
   box()
   
   abline(h = y$number-0.5, col = rgb(0,0,0,0.25))
@@ -152,27 +192,26 @@ for(i in 1:4){
        lwd.ticks = 0.5,
        line = 0)
   
-  
 }
 
 par(mar = c(10.2,6,5,2))
 image(x=1, 
-      y=as.numeric(factor(mybreaks)), 
-      z=as.matrix(t(c(NA,c(1:14,15,20,25,30)))), 
+      y=c(1,as.numeric(factor(mybreaks))+1), 
+      z=as.matrix(t(c(-1,NA,c(1,4,10,20,30,40,50,100,200,300)))), 
       xlab = "", 
       ylab = "",
       axes = F, 
-      col = viridis::viridis(length(mybreaks)-1), 
-      breaks = mybreaks)
+      col = c("red", "grey", viridis::viridis(length(mybreaks)-2)), 
+      breaks = c(-1, mybreaks))
 box()
 axis(side = 2, 
-     at = as.numeric(factor(mybreaks)), 
-     labels = c(0,1:14, "15-19", "20-24", "25-29", "30+"), 
+     at = c(1, as.numeric(factor(mybreaks))+1), 
+     labels = c("4+ but\nTree Error", 0,c("1-3","4-9","10-19","20-29","30-39","40-49","50-99","100-199","200-299","300+")),
      tick = F,
      las = 1)
 axis(side = 3, 
      at = 1, 
-     labels = "Subtree\nFrequency", 
+     labels = "Sequence\nFrequency", 
      tick = F)
 
 dev.off()

@@ -1,10 +1,8 @@
-# script to format correlation tables and save to word doc
+# script to format summary tables and save to word doc
 
 
 ## load data
-# load("./03-Output/01-Tables/tables_corrs.rdata")
-load("./03-Output/01-Tables/tables_cors.rdata")
-
+load("./03-Output/01-Tables/tables_tree_summaries.rdata")
 
 
 ## packages
@@ -19,14 +17,6 @@ library(officer)
 
 
 ## combine into list
-
-# table.cors2 <- cors %>% 
-#   mutate(sig = sign(cor2.5)==sign(cor97.5), )
-#   tabulator(cors, 
-#                          c("subtype_x", "slagtype", "slag"), 
-#                          c("subtype_y", "tlag"), 
-#                          coeff = as_paragraph(cor50, " ", as_bracket(cor2.5, cor97.5)))
-
 
 t.list <- mget(ls(pattern = "^table[.]"))
 names(t.list) <- sub("[.]", "_", sub("table[.]", "", names(t.list)))
@@ -49,11 +39,14 @@ names(t.list) <- sub("[.]", "_", sub("table[.]", "", names(t.list)))
 
 
 ## create titles/captions for tables
-# caps <- c("Autocorrelations", 
-#           "Correlations", 
-#           "Crosscorrelations")
-caps <- c("Spatiotemporal Correlations in Seasonal Diversification among Influenza Subtypes", 
-          "Spatiotemporal Correlations in Seasonal Diversification among Influenza Subtypes, 2015-2020")
+caps <- c("Tree Summaries Type A H1 by Season", 
+          "Tree Summaries Type A H1 by Season", 
+          "Tree Summaries Type A H1 by Season", 
+          "Tree Summaries Type A H1 by Season", 
+          "Full Tree Summaries by Subtype", 
+          "Resampled Tree Summaries by Subtype", 
+          "Simple Tree Summaries by Subtype", 
+          "Simple Imputed Tree Summaries by Subtype")
 
 
 
@@ -65,7 +58,7 @@ ft.list <- lapply(1:length(t.list),
                      ft <- t.list[[fti]]
                      ftc <- caps[fti]
                      
-                     names(ft) <- paste0(names(ft),1:length(names(ft)))
+                     
                      
                      ft %>%
                        flextable() %>%
@@ -134,18 +127,6 @@ ft.list <- lapply(1:length(t.list),
                                    #### table is centered on page, 
                                    ##### this will force it to use paragraph formatting specified above
                                    align_with_table = FALSE) %>%
-                       
-                       # bg(i = ~as.numeric(substr(value, 
-                       #                           1, 
-                       #                           strsplit(value, 
-                       #                                    split = "") %>% 
-                       #                             unlist() %>% 
-                       #                             `%in%`(.,
-                       #                                    c(" "))%>%
-                       #                             which()%>%
-                       #                             .[1]-1))>0, 
-                       #    bg = "green")
-                       # bg(., bg = (\(x){if(grepl("[*]", x)){if(grepl("[-]", x)){scales::coln}}}))
                        
                        return()
                      
@@ -324,7 +305,7 @@ for(i in 1:length(ft.list)){
   
   ### save the word doc to a file
   print(temp, 
-        target = paste0("./03-Output/01-Tables/table_", 
+        target = paste0("./03-Output/01-Tables/table_tree_summaries_", 
                         names(ft.list)[i], 
                         ".docx"))
   
@@ -353,7 +334,7 @@ for(i in 1:length(ft.list)){
 
 ## save
 save(ft.list, 
-     file = "./03-Output/01-Tables/flextables_corrs.rds")
+     file = "./03-Output/01-Tables/flextables_tree_summaries.rds")
 
 
 ## clean environment
