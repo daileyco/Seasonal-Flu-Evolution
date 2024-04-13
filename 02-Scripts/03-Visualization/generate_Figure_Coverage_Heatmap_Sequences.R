@@ -16,10 +16,10 @@ seqs <- seqs.df %>%
   full_join(., 
             trees.full %>% 
               filter(!is.na(tree.newick)) %>% 
-              select(subtype, season, location, tree.newick, errorts), 
+              select(subtype, season, location, tree.newick, filename.lsd), 
             by = c("subtype", "season", "location")) %>%
   mutate(maketree = !is.na(tree.newick), 
-         havetree = maketree & is.na(errorts))
+         havetree = maketree & !is.na(filename.lsd))
 
 
 
@@ -35,7 +35,7 @@ seqs <- seqs.df %>%
 #          )
 
 
-mybreaks <- c(0,3,9,19,29,39,49,99,199,299,max(seqs$n, na.rm=T))
+mybreaks <- c(0,2,9,19,29,39,49,99,199,299,max(seqs$n, na.rm=T))
 
 
 
@@ -206,7 +206,7 @@ image(x=1,
 box()
 axis(side = 2, 
      at = c(1, as.numeric(factor(mybreaks))+1), 
-     labels = c("4+ but\nTree Error", 0,c("1-3","4-9","10-19","20-29","30-39","40-49","50-99","100-199","200-299","300+")),
+     labels = c("3+ but\nTree Error", 0,c("1-2","3-9","10-19","20-29","30-39","40-49","50-99","100-199","200-299","300+")),
      tick = F,
      las = 1)
 axis(side = 3, 

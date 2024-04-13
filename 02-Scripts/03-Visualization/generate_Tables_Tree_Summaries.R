@@ -11,23 +11,27 @@ source("./02-Scripts/02-Helper-Functions/tabulator.R")
 
 library(tidyr)
 library(dplyr)
+library(lubridate)
 # library(flextable)
 
 
 trees.full <- trees.full %>% 
-  mutate(tmrca1 = tmrca-season.num-1)
+  mutate(tmrca1 = decimal_date(as.Date(tMRCA))-season.num-1, 
+         rate = as.numeric(rate))
 
-table.full <- create.Table.1(c("ntips", "mpd", "imbalance.collessnorm", "avgladder", "diameter", "closeness", "cherries", "tmrca1", "mean.rate"), 
+table.full <- create.Table.1(c("ntips", "mpd", "imbalance.collessnorm", "avgladder", "diameter", "cherries", "tmrca1", "rate"), 
                              "subtype", 
                              trees.full)
 
 
 
 trees.full1520 <- trees.full %>% 
-  mutate(tmrca1 = tmrca-season.num-1)%>%
+  mutate(tmrca1 = decimal_date(as.Date(tMRCA))-season.num-1, 
+         rate = as.numeric(rate))%>%
   filter(season.num>2014)
 
-table.full1520 <- create.Table.1(c("ntips", "mpd", "imbalance.collessnorm", "avgladder", "diameter", "closeness", "cherries", "tmrca1", "mean.rate"), 
+table.full1520 <- create.Table.1(c("ntips", "mpd", "imbalance.collessnorm", "avgladder", "diameter", #"closeness", 
+                                   "cherries", "tmrca1", "rate"), 
                              "subtype", 
                              trees.full1520)
 

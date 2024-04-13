@@ -1,12 +1,22 @@
+# script to read output files of iqtree into an r df
 
+## load data
+
+## packages
 library(dplyr)
 
+## helper functions
+
+
+
+## iqtree files
 iqtree.list <- c(list.files("./01-Data/01-Processed-Data/IQTREE/H3", full.names = T, pattern = ".iqtree"), 
                    list.files("./01-Data/01-Processed-Data/IQTREE/H1", full.names = T, pattern = ".iqtree"), 
                    list.files("./01-Data/01-Processed-Data/IQTREE/BVic", full.names = T, pattern = ".iqtree"), 
                    list.files("./01-Data/01-Processed-Data/IQTREE/BYam", full.names = T, pattern = ".iqtree"))
 
 
+### pull info from filenames
 metadata <- lapply(iqtree.list, 
                    function(x){
                      sub(".+/(.+)[.]fasta[.]iqtree$", "\\1", x)%>%
@@ -24,6 +34,7 @@ metadata <- lapply(iqtree.list,
 
 
 
+### add info in file
 iqtree.df <- lapply(1:nrow(metadata), function(i){
   
   iqtree.output <- readLines(metadata$filename[i])
@@ -40,7 +51,8 @@ iqtree.df <- lapply(1:nrow(metadata), function(i){
     p.c = iqtree.output[grep("pi\\(C\\)", iqtree.output)], 
     p.g = iqtree.output[grep("pi\\(G\\)", iqtree.output)], 
     p.t = iqtree.output[grep("pi\\(T\\)", iqtree.output)],
-    tree.newick = iqtree.output[grep("Tree in newick format:", iqtree.output)+2]
+    tree.newick = iqtree.output[grep("Tree in newick format:", iqtree.output)+2], 
+    tree.newick2 = paste0(readLines(sub("[.]iqtree", ".treefile", metadata$filename[i])), collapse = "")
   )
   
   return(df)
@@ -62,14 +74,8 @@ iqtree.df <- lapply(1:nrow(metadata), function(i){
 
 
 
-iqtree.df <- full_join(metadata, iqtree.df, by = "filename")
 
-
-
-
-
-
-
+## same for log files
 
 log.list <- c(list.files("./01-Data/01-Processed-Data/IQTREE/H3", full.names = T, pattern = ".log"),
               list.files("./01-Data/01-Processed-Data/IQTREE/H1", full.names = T, pattern = ".log"),
@@ -109,17 +115,89 @@ log.df <- lapply(1:nrow(metadata.log), function(i){
 
 
 
-log.df <- full_join(metadata.log, log.df, by = "filename")
+
+
+## same for lsd files
+
+lsd.list <- c(list.files("./01-Data/01-Processed-Data/IQTREE/H3", full.names = T, pattern = ".lsd"),
+              list.files("./01-Data/01-Processed-Data/IQTREE/H1", full.names = T, pattern = ".lsd"),
+              list.files("./01-Data/01-Processed-Data/IQTREE/BVic", full.names = T, pattern = ".lsd"),
+              list.files("./01-Data/01-Processed-Data/IQTREE/BYam", full.names = T, pattern = ".lsd"))
 
 
 
-iqtree <- full_join(log.df, iqtree.df, by = c("subtype", "season", "location", "n", "rep"))
+metadata.lsd <- lapply(lsd.list, 
+                       function(x){
+                         sub(".+/(.+)[.]fasta[.]timetree[.]lsd$", "\\1", x)%>%
+                           strsplit(., "_")%>%
+                           unlist()%>%
+                           setNames(., nm = c("subtype", "season", "location", "n", "rep"))%>%
+                           t()%>%
+                           as.data.frame()
+                       })%>%
+  bind_rows() %>%
+  bind_cols(., filename = lsd.list) %>%
+  mutate(n = as.numeric(sub("n", "", n)), 
+         rep = as.numeric(sub("rep", "", rep)))
+
+
+lsd.df <- lapply(1:nrow(metadata.lsd), function(i){
+  
+  iqtree.output <- readLines(metadata.lsd$filename[i])
+  
+  
+  df <- data.frame(
+    filename = metadata.lsd$filename[i],
+    datingresults = paste0(iqtree.output[grep("- Dating results:", iqtree.output)+1], collapse = ""), 
+    timetreenexusfile = sub("[.]lsd", ".nex", metadata.lsd$filename[i])
+  ) %>% 
+    mutate(rate = sub("^.*rate[:blank:]*(.+),{1}.+,{1}.+$", "\\1", datingresults), 
+           tMRCA = sub("^.+,{1}.*tMRCA[:blank:]*(.+),{1}.+$", "\\1", datingresults), 
+           objfn = sub("^.+,{1}.+,{1}.*objective function[:blank:]*(.+)$", "\\1", datingresults))
+  
+  return(df)
+  
+}) %>% bind_rows()
 
 
 
+
+
+
+
+
+
+
+
+## put them all together
+
+
+iqtree.df <- full_join(metadata, iqtree.df, by = "filename")%>%rename(filename.iqtree = filename)
+
+log.df <- full_join(metadata.log, log.df, by = "filename")%>%rename(filename.log = filename)
+
+lsd.df <- full_join(metadata.lsd, lsd.df, by = "filename")%>%rename(filename.lsd = filename)
+
+
+
+iqtree <- full_join(log.df, 
+                    iqtree.df, 
+                    by = c("subtype", "season", "location", "n", "rep")) %>% 
+  full_join(., 
+            lsd.df, 
+            by = c("subtype", "season", "location", "n", "rep"))
+
+
+
+
+
+
+
+## save
 save(iqtree, file = "./01-Data/01-Processed-Data/iqtree_results.rds")
 
 
 
+## clean environment
 rm(list=ls())
 gc()

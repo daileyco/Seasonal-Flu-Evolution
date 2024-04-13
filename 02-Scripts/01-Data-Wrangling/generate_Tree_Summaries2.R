@@ -9,6 +9,12 @@ source("./02-Scripts/02-Helper-Functions/summarize_Tree.R")
 
 library(ape)
 library(dplyr)
+
+iqtree <- iqtree %>%
+  mutate(tree = ifelse(is.na(smalltree), tree.newick2, smalltree))
+
+
+
 # 
 # treesummaries <- lapply(iqtree$tree.newick, 
 #                         function(this.tree.text){
@@ -37,13 +43,20 @@ treesummaries.list <- parLapplyLB(cl,
                                 1:nrow(iqtree),
                                 # iqtree$tree.newick.timescaled,
                                 function(this.index){
-                                  this.tree.text <- iqtree$tree.newick.timescaled[this.index]
+                                  # this.tree.text <- iqtree$tree.newick.timescaled[this.index]
+                                  this.tree.text <- iqtree$tree[this.index]
                                   # this.tree <- try(root_Tree(this.tree.text))
                                   this.tree <- try(read.tree(text = this.tree.text))
                                   this.tree.summary <- try(summarize_Tree(this.tree))
                                   
-                                  this.output <- cbind(iqtree[this.index,which(names(iqtree)%in%c("subtype", "season", "location", "n", "rep", "tree.newick.timescaled"))], 
+                                  if(class(this.tree.summary)=="try-error"){
+                                    this.output <- NULL
+                                  }else{
+                                    
+                                    this.output <- cbind(iqtree[this.index,which(names(iqtree)%in%c("subtype", "season", "location", "n", "rep", "tree"))], 
                                                        this.tree.summary)
+                                  }
+                                  
                                   return(this.output)
                                 })
 
@@ -54,8 +67,8 @@ treesummaries <- bind_rows(treesummaries.list)
 
 
 smalltrees <- full_join(treesummaries, 
-                        tree.df, 
-                        by = c("subtype", "season", "location", "n", "rep", "tree.newick.timescaled"))
+                        tree.df%>%mutate(tree=ifelse(is.na(smalltree), tree.newick2, smalltree)), 
+                        by = c("subtype", "season", "location", "n", "rep", "tree"))
 
 
 # iqtree <- cbind(iqtree, treesummaries)

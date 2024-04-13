@@ -13,33 +13,6 @@ Assess the spatio-temporal variation in seasonal influenza evolution
 
 
 
-# Census of Available Sequences
-
-
-
-Feasibility check to see how many sequences available given stratifications
-```{r}
-source("./02-Scripts/01-Data-Wrangling/process_Data_Flu_Metadata.R")
-```
-
-
-
-```{r}
-
-# load("./03-Output/01-Tables/census.rdata")
-# library(dplyr)
-# library(flextable)
-# 
-# census %>% flextable() %>% autofit()
-# 
-# census.by.state %>% flextable() %>% autofit()
-```
-
-
-
-
-
-
 
 # Data Management
 
@@ -66,7 +39,11 @@ source("./02-Scripts/01-Data-Wrangling/process_Data_Spatial.R")
 
 ## HA Gene Sequences
 
-take sequence data from lambo and compile to single fasta files for each subtype.
+```{r}
+source("./02-Scripts/01-Data-Wrangling/process_Data_GISAID.R")
+```
+
+
 
 ```{r}
 source("./02-Scripts/01-Data-Wrangling/prep_Files_FASTA.R")
@@ -74,9 +51,14 @@ source("./02-Scripts/01-Data-Wrangling/prep_Files_FASTA.R")
 
 
 
-fasta files were sent to author LD for cleaning / trimming
 
-
+```{r}
+# # MAFFT in ubuntu as linux subsystem on windows
+# mafft --auto BVic_n7167.fasta > BVic_n7167.fasta.mafft; 
+# mafft --auto BYam_n5316.fasta > BYam_n5316.fasta.mafft; 
+# mafft --auto H1_n13893.fasta > H1_n13893.fasta.mafft; 
+# mafft --auto H3_n23819.fasta > H3_n23819.fasta.mafft
+```
 resulting trimmed and aligned sequences are read into r and rewritten to many fasta files corresponding to the stratifications of season and state and subtype;
 
 note only strata with at least 4 sequences have fasta files
@@ -250,6 +232,35 @@ source("./02-Scripts/03-Visualization/generate_Figures_Cors_Heatmap.R")
 <!-- source("./02-Scripts/04-Analysis/compute_Correlations.R") -->
 <!-- ``` -->
 
+
+
+
+
+
+#old
+
+
+# Census of Available Sequences
+
+
+
+Feasibility check to see how many sequences available given stratifications
+```{r}
+source("./02-Scripts/01-Data-Wrangling/process_Data_Flu_Metadata.R")
+```
+
+
+
+```{r}
+
+# load("./03-Output/01-Tables/census.rdata")
+# library(dplyr)
+# library(flextable)
+# 
+# census %>% flextable() %>% autofit()
+# 
+# census.by.state %>% flextable() %>% autofit()
+```
 
 
 

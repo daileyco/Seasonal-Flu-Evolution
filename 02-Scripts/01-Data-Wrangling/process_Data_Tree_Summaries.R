@@ -18,7 +18,7 @@ trees.full <- smalltrees %>% filter(rep==0)
 
 
 trees.season <- smalltrees %>%
-  filter(in.season==TRUE)
+  filter(!is.na(smalltree))
 
 
 

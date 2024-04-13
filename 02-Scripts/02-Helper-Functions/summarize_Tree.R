@@ -32,11 +32,11 @@ summarize_Tree <- function(tree){
                             
                             # cherries = as.numeric(try(gsub("[A-Za-z[:space:][:punct:]]", "", capture.output(cherry(tree))[which(grepl("Number of cherries: ", capture.output(cherry(tree))))]))), 
                             
-                            pd = try(pd(matrix(data = c(1), 
-                                           nrow = 1, 
-                                           ncol = length(tree$tip.label), 
-                                           dimnames = list("all", tree$tip.label)), 
-                                    tree)),  
+                            # pd = try(pd(matrix(data = c(1), 
+                            #                nrow = 1, 
+                            #                ncol = length(tree$tip.label), 
+                            #                dimnames = list("all", tree$tip.label)), 
+                            #         tree)),  
                             mpd = try(mpd(matrix(data = c(1), 
                                              nrow = 1, 
                                              ncol = length(tree$tip.label), 
