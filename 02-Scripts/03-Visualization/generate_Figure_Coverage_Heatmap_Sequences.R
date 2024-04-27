@@ -12,14 +12,14 @@ library(tidyr)
 
 ## figure set up
 
-seqs <- seqs.df %>%
-  full_join(., 
-            trees.full %>% 
-              filter(!is.na(tree.newick)) %>% 
-              select(subtype, season, location, tree.newick, filename.lsd), 
-            by = c("subtype", "season", "location")) %>%
-  mutate(maketree = !is.na(tree.newick), 
-         havetree = maketree & !is.na(filename.lsd))
+seqs <- seqs.df# %>%
+#   full_join(., 
+#             trees.full %>% 
+#               filter(!is.na(tree.newick)) %>% 
+#               select(subtype, season, location, tree.newick, filename.lsd), 
+#             by = c("subtype", "season", "location")) %>%
+#   mutate(maketree = !is.na(tree.newick), 
+#          havetree = maketree & !is.na(filename.lsd))
 
 
 
@@ -41,7 +41,7 @@ mybreaks <- c(0,2,9,19,29,39,49,99,199,299,max(seqs$n, na.rm=T))
 
 
 
-x <- data.frame(season = unique(smalltrees.df$season)) %>%
+x <- data.frame(season = unique(seqs$year)) %>%
   arrange(season) %>%
   mutate(number = as.numeric(substr(season,1,4)))
 
@@ -52,36 +52,36 @@ y <- data.frame(region = unique(smalltrees.df$location)) %>%
 
 
 z <- seqs %>%
-  select(region=location, season, subtype, n) %>%
+  select(region=location, year, subtype, n) %>%
   arrange(desc(region)) %>%
   pivot_wider(names_from = c(region), values_from = n) %>%
-  arrange(season) %>%
+  arrange(year) %>%
   as.data.frame() %>% 
   split(~subtype) %>% 
   lapply(., 
          (\(x){
-           rownames(x) <- x$season
+           rownames(x) <- x$year
            x %>% 
-             select(-season,-subtype) %>% 
+             select(-year,-subtype) %>% 
              as.matrix()
          }))
 
 
-z2 <- seqs %>%
-  mutate(havetree = ifelse(havetree, NA, ifelse(!maketree, NA, havetree))) %>%
-  select(region=location, season, subtype, havetree) %>%
-  arrange(desc(region)) %>%
-  pivot_wider(names_from = c(region), values_from = havetree) %>%
-  arrange(season) %>%
-  as.data.frame() %>% 
-  split(~subtype) %>% 
-  lapply(., 
-         (\(x){
-           rownames(x) <- x$season
-           x %>% 
-             select(-season,-subtype) %>% 
-             as.matrix()
-         }))
+# z2 <- seqs %>%
+#   mutate(havetree = ifelse(havetree, NA, ifelse(!maketree, NA, havetree))) %>%
+#   select(region=location, season, subtype, havetree) %>%
+#   arrange(desc(region)) %>%
+#   pivot_wider(names_from = c(region), values_from = havetree) %>%
+#   arrange(season) %>%
+#   as.data.frame() %>% 
+#   split(~subtype) %>% 
+#   lapply(., 
+#          (\(x){
+#            rownames(x) <- x$season
+#            x %>% 
+#              select(-season,-subtype) %>% 
+#              as.matrix()
+#          }))
 
 
 
@@ -131,14 +131,14 @@ for(i in 1:4){
         col = c("grey", viridis::viridis(length(mybreaks)-2)), 
         breaks = mybreaks)
   
-  image(x=x$number, 
-        y=y$number, 
-        z=z2[[i]], 
-        xlab = "", 
-        ylab = "",
-        axes = F, 
-        col = rgb(1,0,0,1),
-        add = TRUE)
+  # image(x=x$number, 
+  #       y=y$number, 
+  #       z=z2[[i]], 
+  #       xlab = "", 
+  #       ylab = "",
+  #       axes = F, 
+  #       col = rgb(1,0,0,1),
+  #       add = TRUE)
 
   
   box()
@@ -173,18 +173,18 @@ for(i in 1:4){
   # }
   
   axis(3, 
-       at = c(2010,2019), 
+       at = c(2010,2020), 
        labels = F, 
        line = 0.5, 
        tcl = 0.2)
   axis(3, 
-       at = mean(c(2010,2019)), 
+       at = mean(c(2010,2020)), 
        labels = c("BVic", "BYam", "H1", "H3")[i], 
        line = 0.5, 
        tcl = -0.2)
   
   axis(1, 
-       at = 2010:2019, 
+       at = 2010:2020, 
        labels = x$season,
        las = 2,
        hadj = 1, 
@@ -195,18 +195,32 @@ for(i in 1:4){
 }
 
 par(mar = c(10.2,6,5,2))
+# image(x=1, 
+#       y=c(1,as.numeric(factor(mybreaks))+1), 
+#       z=as.matrix(t(c(-1,NA,c(1,4,10,20,30,40,50,100,200,300)))), 
+#       xlab = "", 
+#       ylab = "",
+#       axes = F, 
+#       col = c("red", "grey", viridis::viridis(length(mybreaks)-2)), 
+#       breaks = c(-1, mybreaks))
+# box()
+# axis(side = 2, 
+#      at = c(1, as.numeric(factor(mybreaks))+1), 
+#      labels = c("3+ but\nTree Error", 0,c("1-2","3-9","10-19","20-29","30-39","40-49","50-99","100-199","200-299","300+")),
+#      tick = F,
+#      las = 1)
 image(x=1, 
-      y=c(1,as.numeric(factor(mybreaks))+1), 
-      z=as.matrix(t(c(-1,NA,c(1,4,10,20,30,40,50,100,200,300)))), 
+      y=c(as.numeric(factor(mybreaks))), 
+      z=as.matrix(t(c(NA,c(1,4,10,20,30,40,50,100,200,300)))), 
       xlab = "", 
       ylab = "",
       axes = F, 
-      col = c("red", "grey", viridis::viridis(length(mybreaks)-2)), 
-      breaks = c(-1, mybreaks))
+      col = c("grey", viridis::viridis(length(mybreaks)-2)), 
+      breaks = c(mybreaks))
 box()
 axis(side = 2, 
-     at = c(1, as.numeric(factor(mybreaks))+1), 
-     labels = c("3+ but\nTree Error", 0,c("1-2","3-9","10-19","20-29","30-39","40-49","50-99","100-199","200-299","300+")),
+     at = c(as.numeric(factor(mybreaks))), 
+     labels = c(0,c("1-2","3-9","10-19","20-29","30-39","40-49","50-99","100-199","200-299","300+")),
      tick = F,
      las = 1)
 axis(side = 3, 

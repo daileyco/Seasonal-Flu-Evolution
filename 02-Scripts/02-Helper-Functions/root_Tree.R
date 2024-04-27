@@ -14,9 +14,9 @@ root_Tree <- function(this.tree.newick){
   
   these.labels.dates <- sapply(these.labels, 
                                function(this.label){
-                                 this.sampling.date <- strsplit(this.label, split = "_")[[1]][4]
+                                 this.sampling.date <- strsplit(this.label, split = "\\|")[[1]][2]
                                }) %>% 
-    as.Date(., "%Y%m%d")
+    as.Date(., "%Y-%m-%d")
   
   this.tree.rooted <- rtt(this.tree, as.numeric(these.labels.dates))
   

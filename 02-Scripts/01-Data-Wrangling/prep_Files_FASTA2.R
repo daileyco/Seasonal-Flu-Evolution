@@ -118,21 +118,31 @@ for(ii in 1:nrow(combos)){
 # siphon off some summary stats
 
 
+combos <- expand.grid(subtype = subtypes,
+                      location = ustates, 
+                      year = as.character(2010:2020))
+
 seqs.df <- seqs.df %>% 
-  select(subtype, Collection_Date, location = Location3) %>% 
-  filter(nchar(Collection_Date)==10) %>%
-  mutate(Collection_Date = as.Date(Collection_Date), 
-         season = case_when(epiweek(Collection_Date)>=30 ~ paste0(year(Collection_Date), "-", year(Collection_Date)+1), 
-                            TRUE ~ paste0(year(Collection_Date)-1, "-", year(Collection_Date)))) %>% 
-  filter(season %in% unique(combos$season)) %>% 
+  select(subtype, Collection_Date, location = Location3, Isolate_Name) %>% 
+  # filter(nchar(Collection_Date)==10) %>%
+  mutate(year = sub("^.+/.+/.+/(20[0-9]{2}).*$", "\\1", Isolate_Name)
+         # , 
+         # Collection_Date = as.Date(Collection_Date), 
+         # season = case_when(epiweek(Collection_Date)>=30 ~ paste0(year(Collection_Date), "-", year(Collection_Date)+1), 
+         #                    TRUE ~ paste0(year(Collection_Date)-1, "-", year(Collection_Date)))
+         ) %>% 
+  mutate(year = case_when(Isolate_Name %in% c("A/New York/WC-LVD-14-102/0214") ~ "2014",
+                          year %in% c(2009) ~ "2010",
+                          TRUE ~ year)) %>% 
+  # filter(season %in% unique(combos$season)) %>% 
   # rename(subtype = subtype, season = Collection_season, location = Location3) %>% 
-  group_by(subtype, season, location) %>% 
+  group_by(subtype, year, location) %>% 
   summarise(n = n()) %>% 
   ungroup() %>% 
   full_join(., 
             combos, 
-            by = c("subtype", "season", "location")) %>% 
-  arrange(subtype, season, location)
+            by = c("subtype", "year", "location")) %>% 
+  arrange(subtype, year, location)
 
 
 ## save

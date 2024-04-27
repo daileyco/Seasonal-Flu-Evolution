@@ -139,53 +139,116 @@ outgroups <- data.frame(subtype = rep(c("BVic", "BYam", "H1", "H3"), each = 1),
 #                             substr(metadata$filename[i],
 #                                    3,
 #                                    nchar(metadata$filename[i])))),
-#               '" -m GTR --date TAXNAME',
+#               # '" -m GTR --date TAXNAME',
+#               '" -m GTR --date ',
+#               '"',
+#               file.path(getwd(), "01-Data/01-Processed-Data/IQTREE/datefile.tsv"),
+#               '"',
+#               
+#               ' --date-outlier 3 --date-options "-G -t 1e-4"'
+#               ,
+#               
+#               # ifelse(metadata$season[i]%in%c("2010-2011", "2011-2012"),
+#               #        "",
+#               #        paste0(' -o "', paste0(sub(">", "", fastalabels[(length(fastalabels)):length(fastalabels)]), collapse = ","), '"'))
+#               # 
+#               # ,
+#               
 #               # file.path(getwd(), "01-Data/01-Processed-Data/IQTREE/datefile.tsv"),
 #               ' --date-outlier 3 --date-options "-t 1e-4"'))
 
 
 # 
-for(i in 665:nrow(metadata)){
-# for(i in 1:nrow(metadata)){
-  cat("\n", i, " of ", nrow(metadata))
+# for(i in 665:nrow(metadata)){
+for(i in 1:nrow(metadata)){
+  cat("\n\n\n\n\n", i, " of ", nrow(metadata), " (", round(i/nrow(metadata)*100,1), "%)\n\n\n")
+  Sys.sleep(1)
 
 
   fasta <- readLines(fasta.list[i])
   fastalabels <- fasta[which(substr(fasta, 1,1)==">")]
-  #
-  # datetable <- data.frame(id = sub("^>(.+)[|].+$", "\\1", fastalabels),
-  #                         date = sub("^.+[|](.+)$", "\\1", fastalabels))
-  #
-  # write.table(datetable,
-  #             file = "./01-Data/01-Processed-Data/IQTREE/datefile.tsv",
-  #             sep = "\t",
-  #             row.names = F,
-  #             quote = F)
+
+  datetable <- data.frame(id = sub(":", "_", sub(">", "", fastalabels)), 
+                          # id = sub("^>(.+)[|].+$", "\\1", fastalabels),
+                          date = sub("^.+[|](.+)$", "\\1", fastalabels))
+
+  write.table(datetable,
+              file = "./01-Data/01-Processed-Data/IQTREE/datefile.tsv",
+              sep = "\t",
+              row.names = F,
+              quote = F, 
+              col.names = F)
+
+  
+  if(i==665){
+    
+    
+    # i=665 H1 Idaho 2013-2014; issues, remove outgroup specification and okay
+    system(paste0('"C:/Program Files/iqtree-2.3.1-Windows/bin/iqtree2.exe" -s "',
+                  file.path(getwd(),
+                            substr(metadata$filename[i],
+                                   3,
+                                   nchar(metadata$filename[i]))),
+                  '" -pre "',
+                  file.path(getwd(),
+                            sub("Sequences",
+                                "IQTREE",
+                                substr(metadata$filename[i],
+                                       3,
+                                       nchar(metadata$filename[i])))),
+                  # '" -m GTR --date TAXNAME',
+                  '" -m GTR --date ',
+                  '"',
+                  file.path(getwd(), "01-Data/01-Processed-Data/IQTREE/datefile.tsv"),
+                  '"',
+
+                  ' --date-outlier 3 --date-options "-G -t 1e-4"'
+                  ,
+
+                  # ifelse(metadata$season[i]%in%c("2010-2011", "2011-2012"),
+                  #        "",
+                  #        paste0(' -o "', paste0(sub(">", "", fastalabels[(length(fastalabels)):length(fastalabels)]), collapse = ","), '"'))
+                  #
+                  # ,
+
+                  # file.path(getwd(), "01-Data/01-Processed-Data/IQTREE/datefile.tsv"),
+                  ' --date-outlier 3 --date-options "-t 1e-4"'))
+    
+    
+  }else{
+    
+    system(paste0('"C:/Program Files/iqtree-2.3.1-Windows/bin/iqtree2.exe" -s "',
+                  file.path(getwd(),
+                            substr(metadata$filename[i],
+                                   3,
+                                   nchar(metadata$filename[i]))),
+                  '" -pre "',
+                  file.path(getwd(),
+                            sub("Sequences",
+                                "IQTREE",
+                                substr(metadata$filename[i],
+                                       3,
+                                       nchar(metadata$filename[i])))),
+                  
+                  # '" -m GTR --date TAXNAME',
+                  '" -m GTR --date ',
+                  '"',
+                  file.path(getwd(), "01-Data/01-Processed-Data/IQTREE/datefile.tsv"),
+                  '"',
+                  
+                  ' --date-outlier 3 --date-options "-G -t 1e-4"'
+                  ,
+                  
+                  ifelse(metadata$season[i]%in%c("2010-2011", "2011-2012"),
+                         "",
+                         paste0(' -o "', paste0(sub(">", "", fastalabels[(length(fastalabels)):length(fastalabels)]), collapse = ","), '"'))
+                  
+    ))
+    
+  }
 
 
-
-  system(paste0('"C:/Program Files/iqtree-2.3.1-Windows/bin/iqtree2.exe" -s "',
-                file.path(getwd(),
-                          substr(metadata$filename[i],
-                                 3,
-                                 nchar(metadata$filename[i]))),
-                '" -pre "',
-                file.path(getwd(),
-                          sub("Sequences",
-                              "IQTREE",
-                              substr(metadata$filename[i],
-                                     3,
-                                     nchar(metadata$filename[i])))),
-                '" -m GTR --date TAXNAME',
-                # file.path(getwd(), "01-Data/01-Processed-Data/IQTREE/datefile.tsv"),
-                ' --date-outlier 3 --date-options "-G -t 1e-4"'
-                ,
-
-                ifelse(metadata$season[i]%in%c("2010-2011", "2011-2012"),
-                       "",
-                       paste0(' -o "', paste0(sub(">", "", fastalabels[(length(fastalabels)):length(fastalabels)]), collapse = ","), '"'))
-
-                ))
+  
 
 }
 

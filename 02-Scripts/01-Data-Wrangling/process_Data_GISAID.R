@@ -182,7 +182,16 @@ meta <- meta %>%
 # N = 50067
 
 
-
+# N=52254
+# 
+# length(unique(meta$Isolate_Name))
+# N unique isolates = 42560
+# 
+# length(unique(meta$Isolate_Name[which(!meta$Isolate_Name%in%meta$Isolate_Name[which(duplicated(meta$Isolate_Name))])]))
+# N isolates with single sequence = 35741
+# length(unique(meta$Isolate_Name[which(meta$Isolate_Name%in%meta$Isolate_Name[which(duplicated(meta$Isolate_Name))])]))
+# length(meta$Isolate_Name[which(meta$Isolate_Name%in%meta$Isolate_Name[which(duplicated(meta$Isolate_Name))])])
+# N isolates with multiple sequences = 6819 isos with 14326 seqs
 
 
 

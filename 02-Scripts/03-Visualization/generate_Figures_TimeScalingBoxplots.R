@@ -26,13 +26,15 @@ load("./01-Data/02-Analytic-Data/smalltrees_summaries.rdata")
 png(filename = "./03-Output/02-Figures/mutation_rate_boxplots.png", width = 16, height = 9, res = 300, units = "in", pointsize = 10)
 par(mfrow = c(2,2))
 for(i in 1:length(unique(trees.full$subtype))){
-  boxplot(mean.rate~season, 
+  boxplot(sqrt(as.numeric(rate))~season, 
           data = trees.full%>%filter(subtype%in%unique(trees.full$subtype)[i]), 
           main = unique(trees.full$subtype)[i], 
-          ylim = c(1e-4, 3e-3)*c(0.95,1.05), 
+          ylim = c(0, sqrt(max(as.numeric(trees.full$rate), na.rm = T)))*c(0.95,1.05),
           xlab = "Season", 
+          yaxt = 'n',
           ylab = "Estimated Mutation Rate (subs/site/year)")
-  abline(h = c(1e-4, 3e-3), lty = 5, cex = 1.5, col = "red")
+  axis(2, at = seq(0, sqrt(max(as.numeric(trees.full$rate), na.rm = T))*1.05, by = 0.01), labels = round(seq(0, sqrt(max(as.numeric(trees.full$rate), na.rm = T))*1.05, by = 0.01)^2, 3))
+  # abline(h = c(1e-4, 3e-3), lty = 5, cex = 1.5, col = "red")
 }
 dev.off()
 

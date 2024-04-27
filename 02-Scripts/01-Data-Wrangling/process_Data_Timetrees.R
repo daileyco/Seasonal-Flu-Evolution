@@ -7,6 +7,18 @@ load("./01-Data/01-Processed-Data/iqtree_results.rds")
 ## helper function
 
 
+makeDecimalDate <- function(y){
+  require(lubridate)
+  case_when(nchar(y)==10 ~ decimal_date(as.Date(y, "%Y-%m-%d")), 
+            nchar(y)==7 ~ as.numeric(substr(y,1,4))+(as.numeric(substr(y,6,7))-1)/12, 
+            nchar(y)==4 ~ as.numeric(y))
+}
+
+
+
+
+
+
 ## packages
 library(ape)
 library(dplyr)
@@ -95,19 +107,28 @@ for(i in 1:nrow(iqtree.full)){
                                  this.sampling.date <- strsplit(this.label, split = "[|]")[[1]][2]
                                })
   
-  these.numdates <- these.labels.dates %>% 
+  these.numdates <- sapply(these.labels.dates, 
     (\(x){
       
-      case_when(nchar(x)==10 ~ decimal_date(as.Date(x, "%Y-%m-%d")), 
-                nchar(x)==7 ~ as.numeric(substr(x,1,4))+as.numeric(substr(x,6,7))/12, 
-                nchar(x)==4 ~ as.numeric(x), 
-                TRUE ~ NA)
+      # case_when(grepl("[_]", x) ~ strsplit(x, split = "_") %>%
+      #                               unlist() %>%
+      #                               as.Date(., "%Y-%m-%d") %>%
+      #                               mean()%>%
+      #                               decimal_date(), 
+      #           nchar(x)==10 ~ decimal_date(as.Date(x, "%Y-%m-%d")), 
+      #           nchar(x)==7 ~ as.numeric(substr(x,1,4))+(as.numeric(substr(x,6,7))-1)/12, 
+      #           nchar(x)==4 ~ as.numeric(x))
+      
+      case_when(grepl("[_]", x) ~ strsplit(x, split = "_") %>%
+                  unlist() %>%
+                  makeDecimalDate() %>%
+                  mean(), 
+                TRUE ~ makeDecimalDate(x))
       
     })
-    
-  
-  
-  
+  )
+
+
   
   
   pathdf <- nodepath(this.timetree) %>% 

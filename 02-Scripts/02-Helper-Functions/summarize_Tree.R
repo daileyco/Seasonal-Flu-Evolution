@@ -47,9 +47,9 @@ summarize_Tree <- function(tree){
                             avgladder = try(phyloTop::avgLadder(tree)))
 
   
-  treesummary <- cbind(treesummary,
-                       data.frame(t(treeCentrality::computeNetworkStats(tree))), 
-                       data.frame(t(treeCentrality::computeBasicStats(tree))))
+  # treesummary <- cbind(treesummary,
+  #                      data.frame(t(treeCentrality::computeNetworkStats(tree))), 
+  #                      data.frame(t(treeCentrality::computeBasicStats(tree))))
   
   
   return(treesummary)

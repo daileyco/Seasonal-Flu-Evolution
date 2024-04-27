@@ -19,7 +19,8 @@ trees.full <- trees.full %>%
   mutate(tmrca1 = decimal_date(as.Date(tMRCA))-season.num-1, 
          rate = as.numeric(rate))
 
-table.full <- create.Table.1(c("ntips", "mpd", "imbalance.collessnorm", "avgladder", "diameter", "cherries", "tmrca1", "rate"), 
+table.full <- create.Table.1(c("ntips", "mpd", "imbalance.collessnorm", "avgladder", #"diameter", "cherries", 
+                               "tmrca1", "rate"), 
                              "subtype", 
                              trees.full)
 
@@ -30,8 +31,8 @@ trees.full1520 <- trees.full %>%
          rate = as.numeric(rate))%>%
   filter(season.num>2014)
 
-table.full1520 <- create.Table.1(c("ntips", "mpd", "imbalance.collessnorm", "avgladder", "diameter", #"closeness", 
-                                   "cherries", "tmrca1", "rate"), 
+table.full1520 <- create.Table.1(c("ntips", "mpd", "imbalance.collessnorm", "avgladder", #"diameter", "closeness", "cherries", 
+                                   "tmrca1", "rate"), 
                              "subtype", 
                              trees.full1520)
 
@@ -42,7 +43,8 @@ table.full1520 <- create.Table.1(c("ntips", "mpd", "imbalance.collessnorm", "avg
 smalltrees.df <- smalltrees.df %>%
   mutate(tmrca1 = tmrca-season.num-1)
 
-table.sub <- create.Table.1(c("ntips", "mpd", "imbalance.collessnorm", "avgladder", "diameter", "closeness", "cherries", "tmrca1"), 
+table.sub <- create.Table.1(c("ntips", "mpd", "imbalance.collessnorm", "avgladder", #"diameter", "closeness", "cherries", 
+                              "tmrca1"), 
                              "subtype", 
                              smalltrees.df)
 
@@ -51,7 +53,8 @@ smalltrees.df1520 <- smalltrees.df %>%
   mutate(tmrca1 = tmrca-season.num-1) %>%
   filter(season.num>2014)
 
-table.sub1520 <- create.Table.1(c("ntips", "mpd", "imbalance.collessnorm", "avgladder", "diameter", "closeness", "cherries", "tmrca1"), 
+table.sub1520 <- create.Table.1(c("ntips", "mpd", "imbalance.collessnorm", "avgladder", #"diameter", "closeness", "cherries", 
+                                  "tmrca1"), 
                             "subtype", 
                             smalltrees.df1520)
 
