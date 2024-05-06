@@ -23,7 +23,9 @@ load("./01-Data/02-Analytic-Data/smalltrees_summaries.rdata")
 
 
 
-png(filename = "./03-Output/02-Figures/mutation_rate_boxplots.png", width = 16, height = 9, res = 300, units = "in", pointsize = 10)
+# png(filename = "./03-Output/02-Figures/mutation_rate_boxplots.png", width = 16, height = 9, res = 300, units = "in", pointsize = 10)
+svg(filename = "./03-Output/02-Figures/mutation_rate_boxplots.svg", width = 8, height = 4.5, pointsize = 10)
+
 par(mfrow = c(2,2))
 for(i in 1:length(unique(trees.full$subtype))){
   boxplot(sqrt(as.numeric(rate))~season, 
@@ -37,6 +39,17 @@ for(i in 1:length(unique(trees.full$subtype))){
   # abline(h = c(1e-4, 3e-3), lty = 5, cex = 1.5, col = "red")
 }
 dev.off()
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -56,7 +69,9 @@ smalltrees.df <- smalltrees.df %>%
 
 # data.frame(date = seq(as.Date("2010-01-01"), as.Date("2020-12-31"), by = "day"))%>%mutate(year = year(date), ew = epiweek(date)) %>% group_by(year) %>% summarise(ewmin = min(ew), ewmax = max(ew)) %>% ungroup() %>% View()
 
-png(filename = "./03-Output/02-Figures/tmrca_epiweek_boxplots.png", width = 16, height = 9, res = 300, units = "in", pointsize = 10)
+# png(filename = "./03-Output/02-Figures/tmrca_epiweek_boxplots.png", width = 16, height = 9, res = 300, units = "in", pointsize = 10)
+svg(filename = "./03-Output/02-Figures/tmrca_epiweek_boxplots.svg", width = 8, height = 4.5, pointsize = 10)
+
 par(mfrow = c(2,2))
 for(i in 1:length(unique(trees.full$subtype))){
   boxplot(ew2~season, 

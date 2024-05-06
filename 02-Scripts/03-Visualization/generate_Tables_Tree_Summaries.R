@@ -22,9 +22,11 @@ trees.full <- trees.full %>%
 table.full <- create.Table.1(c("ntips", "mpd", "imbalance.collessnorm", "avgladder", #"diameter", "cherries", 
                                "tmrca1", "rate"), 
                              "subtype", 
-                             trees.full)
+                             trees.full, 
+                             the.methods = c("medians", "means", "means", "means", "medians", "means"))
 
-
+# tapply(trees.full$tmrca1[which(trees.full$tmrca1>-10)], trees.full$subtype[which(trees.full$tmrca1>-10)], summary);
+# tapply(trees.full$rate[which(trees.full$tmrca1>-5)], trees.full$subtype[which(trees.full$tmrca1>-5)], summary)
 
 trees.full1520 <- trees.full %>% 
   mutate(tmrca1 = decimal_date(as.Date(tMRCA))-season.num-1, 
@@ -34,7 +36,8 @@ trees.full1520 <- trees.full %>%
 table.full1520 <- create.Table.1(c("ntips", "mpd", "imbalance.collessnorm", "avgladder", #"diameter", "closeness", "cherries", 
                                    "tmrca1", "rate"), 
                              "subtype", 
-                             trees.full1520)
+                             trees.full1520, 
+                             the.methods = c("medians", "means", "means", "means", "medians", "means"))
 
 
 
@@ -46,7 +49,8 @@ smalltrees.df <- smalltrees.df %>%
 table.sub <- create.Table.1(c("ntips", "mpd", "imbalance.collessnorm", "avgladder", #"diameter", "closeness", "cherries", 
                               "tmrca1"), 
                              "subtype", 
-                             smalltrees.df)
+                             smalltrees.df, 
+                            the.methods = c("medians", "means", "means", "means", "medians"))
 
 
 smalltrees.df1520 <- smalltrees.df %>%
@@ -56,7 +60,8 @@ smalltrees.df1520 <- smalltrees.df %>%
 table.sub1520 <- create.Table.1(c("ntips", "mpd", "imbalance.collessnorm", "avgladder", #"diameter", "closeness", "cherries", 
                                   "tmrca1"), 
                             "subtype", 
-                            smalltrees.df1520)
+                            smalltrees.df1520, 
+                            the.methods = c("medians", "means", "means", "means", "medians"))
 
 
 

@@ -4,7 +4,8 @@
 
 
 
-png(filename = "./03-Output/02-Figures/data-flowchart.png", height = 8, width = 10, units = "in", res = 300, pointsize = 10)
+# png(filename = "./03-Output/02-Figures/data-flowchart.png", height = 8, width = 10, units = "in", res = 300, pointsize = 10)
+svg(filename = "./03-Output/02-Figures/figure_data-flowchart.svg", height = 8, width = 10, pointsize = 10)
 
 
 plot.new()

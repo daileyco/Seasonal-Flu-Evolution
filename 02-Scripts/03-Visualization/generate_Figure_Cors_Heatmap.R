@@ -10,6 +10,33 @@ load("./01-Data/02-Analytic-Data/correlations_clean.rdata")
 library(dplyr)
 library(tidyr)
 
+
+
+
+
+
+# test <- cors %>% filter(subtype_x==subtype_y & tlag == 0 & slagtype!=c("Network") & slag!=0 & sign(cor50)==sign(cor2.5) & sign(cor50)==sign(cor97.5))
+# plot(test$cor50~test$slag)
+# lines(test$cor50[which(test$subtype_x=="H3")]~test$slag[which(test$subtype_x=="H3")], col = "blue", lwd = 2)
+# lines(test$cor50[which(test$subtype_x=="H1")]~test$slag[which(test$subtype_x=="H1")], col = "red", lwd = 2)
+# lines(test$cor50[which(test$subtype_x=="BVic")]~test$slag[which(test$subtype_x=="BVic")], col = "green", lwd = 2)
+# lines(test$cor50[which(test$subtype_x=="BYam")]~test$slag[which(test$subtype_x=="BYam")], col = "purple", lwd = 2)
+# test %>% 
+#   group_by(subtype_x) %>% 
+#   mutate(corlead = lead(cor50), 
+#          slope = cor50/corlead) %>% 
+#   ungroup() %>% 
+#   filter(complete.cases(.)) %>% 
+#   group_by(subtype_x) %>% 
+#   summarise(slope = mean(slope)) %>% 
+#   ungroup()
+
+
+
+
+
+
+
 ## figure set up
 
 # seqs <- seqs.df %>%

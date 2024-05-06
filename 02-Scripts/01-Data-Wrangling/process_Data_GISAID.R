@@ -30,9 +30,9 @@ meta <- lapply(metafiles,
 
 
 
-# N=52254
+# N=52254 + 4 outgroups
 # 
-# N unique isolates = 44628
+# N unique isolates = 44628 + 4 outgroups
 # 
 # N isolates with single sequence = 37694
 # N isolates with multiple sequences = 6934 isos with 14560 seqs
@@ -51,9 +51,14 @@ meta <- meta %>%
                              Lineage%in%c("Victoria") ~ "BVic", 
                              Lineage%in%c("Yamagata") ~ "BYam", 
                              TRUE ~ NA)) %>%
+  # mutate(subtype = case_when(Isolate_Id%in%c("EPI_ISL_6587") ~ "BYam",  #outgroups c("EPI_ISL_6587", "EPI_ISL_6726", "EPI_ISL_7047", "EPI_ISL_20973")
+  #                            Isolate_Id%in%c("EPI_ISL_6726") ~ "H3", 
+  #                            Isolate_Id%in%c("EPI_ISL_7047") ~ "H1", 
+  #                            Isolate_Id%in%c("EPI_ISL_20973") ~ "BVic", 
+  #                            TRUE ~ subtype)) %>%
   filter(!is.na(subtype))
 
-# N = 50360
+# N = 50360 + 4
 
 # meta %>% 
 #   group_by(subtype, Isolate_Name) %>% 
@@ -179,16 +184,14 @@ meta <- meta %>%
   mutate(Location3 = ifelse(Location3 %in% c("Rhoded Island"), "Rhode Island", Location3)) %>%
   filter(Location3%in%ustates)
 
-# N = 50067
+# N = 50067 +4
 
-
-# N=52254
 # 
 # length(unique(meta$Isolate_Name))
-# N unique isolates = 42560
+# N unique isolates = 42560 +4
 # 
 # length(unique(meta$Isolate_Name[which(!meta$Isolate_Name%in%meta$Isolate_Name[which(duplicated(meta$Isolate_Name))])]))
-# N isolates with single sequence = 35741
+# N isolates with single sequence = 35741 +4
 # length(unique(meta$Isolate_Name[which(meta$Isolate_Name%in%meta$Isolate_Name[which(duplicated(meta$Isolate_Name))])]))
 # length(meta$Isolate_Name[which(meta$Isolate_Name%in%meta$Isolate_Name[which(duplicated(meta$Isolate_Name))])])
 # N isolates with multiple sequences = 6819 isos with 14326 seqs

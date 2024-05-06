@@ -16,8 +16,8 @@ sts <- smalltrees.df %>%
 
 
 
-# svg(filename = "./03-Output/02-Figures/mpd_by_tmrca_points.svg", width = 16, height = 9, pointsize = 10)
-png(filename = "./03-Output/02-Figures/mpd_by_tmrca_points.png", units = "in", res = 300, width = 16, height = 9, pointsize = 10)
+svg(filename = "./03-Output/02-Figures/mpd_by_tmrca_points.svg", width = 8, height = 4.5, pointsize = 10)
+# png(filename = "./03-Output/02-Figures/mpd_by_tmrca_points.png", units = "in", res = 300, width = 16, height = 9, pointsize = 10)
 
 par(mfrow=c(2,2), mar = c(4.1, 4.1, 2.1, 1.1))
 
@@ -57,8 +57,8 @@ dev.off()
 
 
 
-# svg(filename = "./03-Output/02-Figures/mpd_timeseries.svg", width = 16, height = 9, pointsize = 10)
-png(filename = "./03-Output/02-Figures/mpd_timeseries.png", units = "in", res = 300, width = 16, height = 9, pointsize = 10)
+svg(filename = "./03-Output/02-Figures/mpd_timeseries.svg", width = 8, height = 4.5, pointsize = 10)
+# png(filename = "./03-Output/02-Figures/mpd_timeseries.png", units = "in", res = 300, width = 16, height = 9, pointsize = 10)
 
 par(mfrow=c(2,2), mar = c(4.1, 4.1, 2.1, 1.1))
 
@@ -69,7 +69,7 @@ for(ii in 1:length(unique(smalltrees.df$subtype))){
        type = "n",
        ylim = c(0, max(smalltrees.df$mpd, na.rm = T)), 
        xlim = range(c(sts$season.num, smalltrees.df$tmrca), na.rm = T), 
-       ylab = "Average Mean Pairwise Distance for All Subtrees", 
+       ylab = "Mean Pairwise Distance (subs/site)", 
        xlab = "Influenza Season", 
        main = unique(smalltrees.df$subtype)[ii], 
        axes = T, 

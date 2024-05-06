@@ -1,6 +1,11 @@
 # script to partition full phylogenetic trees based on estimated date of internal nodes to identify subtrees whose mrca falls within collection season
 
 ## load data
+load("./01-Data/01-Processed-Data/alt/IQTREE_results.rds")
+iqtreealt <- iqtree
+names(iqtreealt)[4:ncol(iqtreealt)] <- paste0(names(iqtreealt)[4:ncol(iqtreealt)], "_alt")
+
+
 load("./01-Data/01-Processed-Data/iqtree_results.rds")
 
 
@@ -11,10 +16,11 @@ makeDecimalDate <- function(y){
   require(lubridate)
   case_when(nchar(y)==10 ~ decimal_date(as.Date(y, "%Y-%m-%d")), 
             nchar(y)==7 ~ as.numeric(substr(y,1,4))+(as.numeric(substr(y,6,7))-1)/12, 
-            nchar(y)==4 ~ as.numeric(y))
+            nchar(y)==4 ~ as.numeric(y), 
+            TRUE ~ NA)
 }
 
-
+vsubstr <- Vectorize(substr, c("start", "stop"))
 
 
 
@@ -25,6 +31,57 @@ library(dplyr)
 library(tibble)
 library(tidyr)
 library(lubridate)
+
+
+
+
+
+## identify better tree from runs with outgroup and those without
+### use whichever tMRCA is 
+both <- full_join(iqtree, 
+                  iqtreealt) %>% 
+  select(subtype, season, location, matches("tMRCA")) %>% 
+  mutate(across(matches("tMRCA"), ~makeDecimalDate(trimws(.x)), .names = "{.col}_dd"), 
+         seasonnum = as.numeric(substr(season, 1,4)), 
+         across(matches("_dd"), ~.x-seasonnum-1, .names = "{.col}_diff2season"), 
+         dddiff = abs(tMRCA_dd-tMRCA_alt_dd), 
+         altcloser = (tMRCA_dd_diff2season < tMRCA_alt_dd_diff2season) & dddiff > 3)
+
+alt.keep <- which(both$altcloser)
+outgroup.keep <- which(!(1:nrow(both) %in% alt.keep))
+
+
+
+
+
+# dates <- makeDecimalDate(trimws(iqtree.full$tMRCA));
+# tmrcas <- c(both$tMRCA_dd_diff2season[outgroup.keep], both$tMRCA_alt_dd_diff2season[alt.keep]);
+# subtypes <- c(both$subtype[outgroup.keep], both$subtype[alt.keep]);
+# tms <- c(both$tMRCA_dd[outgroup.keep], both$tMRCA_alt_dd[alt.keep]);
+# tapply(tmrcas, subtypes, summary);
+# tapply(tmrcas[which(tms>2005)], subtypes[which(tms>2005)], summary)
+
+
+
+
+
+
+
+names(iqtreealt) <- sub("_alt", "", names(iqtreealt))
+
+
+## subset data to include chosen time trees
+iqtree.full <- bind_rows(iqtree[outgroup.keep,], 
+                         iqtreealt[alt.keep,]) %>% 
+  arrange(subtype, season, location)
+
+
+
+
+
+
+
+
 
 
 
@@ -58,13 +115,6 @@ seasonsdf <- data.frame(date = seq(as.Date("2010-01-01"),
 
 
 
-## subset data to include only full trees
-iqtree.full <- iqtree %>% 
-  filter(rep == 0)
-
-
-
-
 ## set up list to hold output
 tree.list <- list()
 
@@ -93,6 +143,16 @@ for(i in 1:nrow(iqtree.full)){
   
   if(is.na(this.row$timetreenexusfile)){next}
   this.timetree <- read.nexus(file = this.row$timetreenexusfile)
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   
   
@@ -176,6 +236,24 @@ for(i in 1:nrow(iqtree.full)){
     rownames_to_column("node")
   
   
+  
+  
+  
+  
+  # #### pull dates from nexus files (not done with read.nexus())
+  # these.node.dates <- data.frame(datestring = vsubstr(readLines(this.row$timetreenexusfile)[3], 
+  #                                                     unlist(gregexpr("\\[", readLines(this.row$timetreenexusfile)[3])), 
+  #                                                     unlist(gregexpr("\\]", readLines(this.row$timetreenexusfile)[3]))), 
+  #                                prechar = vsubstr(readLines(this.row$timetreenexusfile)[3], 
+  #                                                  unlist(gregexpr("\\[", readLines(this.row$timetreenexusfile)[3]))-1,
+  #                                                  unlist(gregexpr("\\[", readLines(this.row$timetreenexusfile)[3]))-1))  %>% 
+  #   mutate(nodetype = ifelse(prechar==")", "internal", "tip"), 
+  #          datestring1 = gsub('\\[|\\&|[a-z]|\\"|=|\\]', "", datestring), 
+  #          date = makeDecimalDate(datestring1))
+  # # %>% 
+  # #   mutate(nodenum = match(datestring1, these.labels.dates)) %>% 
+  # #   arrange(desc(nodetype)) %>% 
+  # #   mutate(nodenum = ifelse(is.na(nodenum), row_number(), nodenum))
   
   
   

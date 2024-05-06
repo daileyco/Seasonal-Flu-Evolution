@@ -39,14 +39,10 @@ names(t.list) <- sub("[.]", "_", sub("table[.]", "", names(t.list)))
 
 
 ## create titles/captions for tables
-caps <- c("Tree Summaries Type A H1 by Season", 
-          "Tree Summaries Type A H1 by Season", 
-          "Tree Summaries Type A H1 by Season", 
-          "Tree Summaries Type A H1 by Season", 
-          "Full Tree Summaries by Subtype", 
-          "Resampled Tree Summaries by Subtype", 
-          "Simple Tree Summaries by Subtype", 
-          "Simple Imputed Tree Summaries by Subtype")
+caps <- c("Full Tree Summaries by Subtype", 
+          "Full Tree Summaries by Subtype, 2016-2020",
+          "Small Tree Summaries by Subtype",
+          "Small Tree Summaries by Subtype, 2016-2020")
 
 
 

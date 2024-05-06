@@ -7,9 +7,7 @@ load("./01-Data/01-Processed-Data/smalltrees_summaries.rds")
 
 
 
-library(tidyr)
 library(dplyr)
-library(purrr)
 
 
 # trees.full <- iqtree %>% filter(rep==0)

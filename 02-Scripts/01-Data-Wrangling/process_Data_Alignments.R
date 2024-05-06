@@ -93,21 +93,21 @@ seqs.df$seq <- substr(seqs.df$seq,
 
 
 
-# codons <- bind_cols(start = seq(1, max(nchar(seqs.df$seq1), na.rm = T), by = 3), 
-#                     stop = c(seq(1, max(nchar(seqs.df$seq1), na.rm = T), by = 3)[-1]-1, max(nchar(seqs.df$seq1))))
+# codons <- bind_cols(start = seq(1, max(nchar(seqs.df$seq), na.rm = T), by = 3),
+#                     stop = c(seq(1, max(nchar(seqs.df$seq), na.rm = T), by = 3)[-1]-1, max(nchar(seqs.df$seq))))
 # 
 # 
-# vsubstr <- Vectorize(substr, vectorize.args = c("start", "stop")); 
+# vsubstr <- Vectorize(substr, vectorize.args = c("start", "stop"));
 # 
-# stops <- lapply(seqs.df$seq, 
+# stops <- lapply(seqs.df$seq,
 #                 (\(x){
-#                   
+# 
 #                   stopcodon <- which(vsubstr(x, codons$start, codons$stop)%in%c("tga", "tag", "taa"))
 # 
 #                   stopsite <- stopcodon*3
-#                   
+# 
 #                   ifelse(is.null(stopsite), NA, stopsite)
-#                 })) %>% 
+#                 })) %>%
 #   unlist()
 # 
 # 
@@ -405,9 +405,9 @@ seqs.df.clean <- bind_rows(uniqueiso%>%mutate(Collection_Date=as.character(Colle
 
 
 # > length(unique(seqs.df$Isolate_Name))
-# [1] 42113
+# [1] 42113 +4
 # > length(unique(seqs.df.clean$Isolate_Name))
-# [1] 42113
+# [1] 42113 +4
 
 # > table(duplicated(seqs.df$label)|duplicated(seqs.df$Isolate_Name), useNA = 'a')
 # 
@@ -423,45 +423,45 @@ seqs.df.clean <- bind_rows(uniqueiso%>%mutate(Collection_Date=as.character(Colle
 
 
 
-## for outgroup taxon use oldest 3 sequences for each subtype
+# ## for outgroup taxon use oldest 3 sequences for each subtype
+# 
+# seqs.df.clean %>%
+#   filter(nchar(Collection_Date)==10) %>%
+#   arrange(subtype, Collection_Date) %>%
+#   group_by(subtype) %>%
+#   mutate(rn = row_number()) %>%
+#   ungroup() %>%
+#   filter(rn <= 3) %>%
+#   select(subtype, ID)
+# # # # A tibble: 12 × 2
+# # # subtype ID              
+# # # <chr>   <chr>           
+# # # 1 BVic    EPI_ISL_83930   
+# # # 2 BVic    EPI_ISL_85659   
+# # # 3 BVic    EPI_ISL_71453 
+# # # c("EPI_ISL_71453", "EPI_ISL_71454", "EPI_ISL_71455")
+# 
+# # # 4 BYam    EPI_ISL_76940   
+# # # 5 BYam    EPI_ISL_77930   
+# # # 6 BYam    EPI_ISL_76942  
+# # # c("EPI_ISL_76940", "EPI_ISL_77930", "EPI_ISL_76942")
+# 
+# # # 7 H1      EPI_ISL_84161   
+# # # 8 H1      EPI_ISL_77727   
+# # # 9 H1      EPI_ISL_77728   
+# # # c("EPI_ISL_71398", "EPI_ISL_71406", "EPI_ISL_71431")
+# 
+# # # 10 H3      EPI_ISL_125870  
+# # # 11 H3      EPI_ISL_13531313
+# # # 12 H3      EPI_ISL_136605  
+# # # c("EPI_ISL_158599", "EPI_ISL_74088", "EPI_ISL_76705")
+# 
+# 
+# outgroupids <- c("EPI_ISL_71453", "EPI_ISL_71454", "EPI_ISL_71455", "EPI_ISL_76940", 
+#                  "EPI_ISL_77930", "EPI_ISL_76942", "EPI_ISL_71398", "EPI_ISL_71406", 
+#                  "EPI_ISL_71431", "EPI_ISL_158599", "EPI_ISL_74088", "EPI_ISL_76705")
 
-seqs.df.clean %>%
-  filter(nchar(Collection_Date)==10) %>%
-  arrange(subtype, Collection_Date) %>%
-  group_by(subtype) %>%
-  mutate(rn = row_number()) %>%
-  ungroup() %>%
-  filter(rn <= 3) %>%
-  select(subtype, ID)
-# # # A tibble: 12 × 2
-# # subtype ID              
-# # <chr>   <chr>           
-# # 1 BVic    EPI_ISL_83930   
-# # 2 BVic    EPI_ISL_85659   
-# # 3 BVic    EPI_ISL_71453 
-# # c("EPI_ISL_71453", "EPI_ISL_71454", "EPI_ISL_71455")
-
-# # 4 BYam    EPI_ISL_76940   
-# # 5 BYam    EPI_ISL_77930   
-# # 6 BYam    EPI_ISL_76942  
-# # c("EPI_ISL_76940", "EPI_ISL_77930", "EPI_ISL_76942")
-
-# # 7 H1      EPI_ISL_84161   
-# # 8 H1      EPI_ISL_77727   
-# # 9 H1      EPI_ISL_77728   
-# # c("EPI_ISL_71398", "EPI_ISL_71406", "EPI_ISL_71431")
-
-# # 10 H3      EPI_ISL_125870  
-# # 11 H3      EPI_ISL_13531313
-# # 12 H3      EPI_ISL_136605  
-# # c("EPI_ISL_158599", "EPI_ISL_74088", "EPI_ISL_76705")
-
-
-outgroupids <- c("EPI_ISL_71453", "EPI_ISL_71454", "EPI_ISL_71455", "EPI_ISL_76940", 
-                 "EPI_ISL_77930", "EPI_ISL_76942", "EPI_ISL_71398", "EPI_ISL_71406", 
-                 "EPI_ISL_71431", "EPI_ISL_158599", "EPI_ISL_74088", "EPI_ISL_76705")
-
-
+outgroupids <- c("EPI_ISL_6587", "EPI_ISL_6726", "EPI_ISL_7047", "EPI_ISL_20973")
 
 seqs.df <- seqs.df.clean %>% 
   

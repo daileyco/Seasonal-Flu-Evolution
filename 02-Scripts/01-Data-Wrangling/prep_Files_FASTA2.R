@@ -50,12 +50,12 @@ combos <- expand.grid(subtype = subtypes,
 
 
 
-outgroupids <- c("EPI_ISL_71453", #"EPI_ISL_71454", "EPI_ISL_71455", 
-                 "EPI_ISL_76940", #"EPI_ISL_77930", "EPI_ISL_76942", 
-                 "EPI_ISL_71398", #"EPI_ISL_71406", "EPI_ISL_71431", 
-                 "EPI_ISL_158599" #,"EPI_ISL_74088", "EPI_ISL_76705"
-                 )
-
+# outgroupids <- c("EPI_ISL_71453", #"EPI_ISL_71454", "EPI_ISL_71455", 
+#                  "EPI_ISL_76940", #"EPI_ISL_77930", "EPI_ISL_76942", 
+#                  "EPI_ISL_71398", #"EPI_ISL_71406", "EPI_ISL_71431", 
+#                  "EPI_ISL_158599" #,"EPI_ISL_74088", "EPI_ISL_76705"
+#                  )
+outgroupids <- c("EPI_ISL_6587", "EPI_ISL_6726", "EPI_ISL_7047", "EPI_ISL_20973")
 
 
 # write in loop
@@ -82,12 +82,17 @@ for(ii in 1:nrow(combos)){
   
   nseqs <- nrow(these.seqs)
   
-  if(!combos$season[ii]%in%c("2010-2011", "2011-2012")){
-
-    these.seqs <- these.seqs %>%
+  # if(!combos$season[ii]%in%c("2010-2011", "2011-2012")){
+  # 
+  #   these.seqs <- these.seqs %>%
+  #   bind_rows(.,
+  #             this.outgroup)
+  # }
+  
+  these.seqs <- these.seqs %>%
     bind_rows(.,
               this.outgroup)
-  }
+  
   
   
   if(nseqs>2){
@@ -142,7 +147,8 @@ seqs.df <- seqs.df %>%
   full_join(., 
             combos, 
             by = c("subtype", "year", "location")) %>% 
-  arrange(subtype, year, location)
+  arrange(subtype, year, location) %>%
+  filter(year>2009)
 
 
 ## save

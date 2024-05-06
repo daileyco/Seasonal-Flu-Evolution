@@ -59,20 +59,26 @@ source("./02-Scripts/01-Data-Wrangling/prep_Files_FASTA.R")
 # mafft --auto H1_n13893.fasta > H1_n13893.fasta.mafft; 
 # mafft --auto H3_n23819.fasta > H3_n23819.fasta.mafft
 ```
+
+
+alignments were read into r and trimmed to coding regions
+
+```{r}
+source("./02-Scripts/01-Data-Wrangling/process_Data_Alignments.R")
+```
+
+
+
 resulting trimmed and aligned sequences are read into r and rewritten to many fasta files corresponding to the stratifications of season and state and subtype;
 
-note only strata with at least 4 sequences have fasta files
-
-<!-- note resampling of sequences in strata with more than 15 sequences -->
-<!-- - number of resamplings scales with number of sequences -->
-<!-- - number of sequences in each resampled set is random 4:15 -->
+note only strata with at least 3 sequences have fasta files
 
 ```{r}
 source("./02-Scripts/01-Data-Wrangling/prep_Files_FASTA2.R")
 ```
 
 
-stratum-specific fasta files (sets of sequences) are piped to IQTREE software for maximum likelihood estimation of a phylogeny; one stratum = one tree.
+stratum-specific fasta files (sets of sequences) are piped to IQTREE2 software for maximum likelihood estimation of a phylogeny and subsequent phylogenetic dating; one stratum = two trees = one evolutionary tree + one time tree.
 
 
 ```{r}
