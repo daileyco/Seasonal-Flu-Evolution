@@ -300,6 +300,174 @@ dev.off()
 
 
 
+# svg(filename = paste0("./03-Output/02-Figures/cors_heatmap_", c("BVic", "BYam", "H1", "H3")[i], ".svg"), width = 8, height = 4.5, pointsize = 10)
+# png(filename = "./03-Output/02-Figures/cors_heatmap_all.png", width = 9, height = 5, pointsize = 10, units = "in", res = 300)
+svg(filename = "./03-Output/02-Figures/cors_heatmap_all.svg", width = 9, height = 4.2, pointsize = 10)
+
+ 
+layout(matrix(c(4,3,5,1,2,5),ncol = 3, byrow=T), widths = c(3,3,1), heights = c(1))
+# layout.show(n=5)
+
+for(i in 1:4){
+  
+  
+  
+  # layout.show(n=2)
+  
+  par(mar = c(4.1,4.1,2,2))
+  
+  
+  image(x=0:3, 
+        y=0:3, 
+        z=stcors[[i]], 
+        xlab = "", 
+        ylab = "",
+        axes = F, 
+        col = mycols, 
+        breaks = mybreaks)
+  
+  text(x=rep(0:3,4),y=rep(0:3,each=4), labels = round(stcorssig[[i]],3))
+  
+  
+  box()
+  
+  abline(h = 0:3-0.5, col = rgb(0,0,0,0.25))
+  abline(v = 0:3+0.5, col = rgb(0,0,0,0.25))
+  
+  # if(i == 1){
+  axis(1, 
+       at = 0:3, 
+       labels = FALSE, 
+       las = 2, 
+       lwd = 0, 
+       lwd.ticks = 0.5,
+       padj = 0.5, 
+       hadj = 1, 
+       tcl = -0.2)
+  
+  axis(1, 
+       at = 0:3, 
+       labels = 0:3, 
+       las = 1, 
+       lwd = 0, 
+       lwd.ticks = 0,
+       padj = 0.5, 
+       hadj = 0.5, 
+       line = -1)
+  arrows(x0=0,y0=-1,x1=3,y1=-1,length=0.125, angle = 30, code = 2, lwd = 1.5, xpd = T)
+  text(c(0, 3), rep(-1.1,2), labels = c("Current", "Past"), xpd = T, adj = c(0.5,1), font = 3, cex = 0.7)
+  title(xlab = "Temporal Lag", line = 3)
+  
+  
+  
+  
+  
+  
+  
+  axis(2, 
+       at = 0:3, 
+       labels = FALSE, 
+       las = 2, 
+       lwd = 0, 
+       lwd.ticks = 0.5,
+       padj = 0.5, 
+       hadj = 1, 
+       tcl = -0.2)
+  
+  axis(2, 
+       at = 0:3, 
+       labels = 0:3, 
+       las = 2, 
+       lwd = 0, 
+       lwd.ticks = 0,
+       padj = 0.5, 
+       hadj = 1, 
+       line = -0.5)
+  
+  
+  
+  arrows(x0=-0.75,y0=0,x1=-0.75,y1=3,length=0.125, angle = 30, code = 2, lwd = 1.5, xpd = T)
+  text(rep(-0.9,2), c(0, 3), labels = c("Local", "Distant"), xpd = T, adj = c(0.5,1), font = 3, srt = 90, cex = 0.7)
+  title(ylab = "Spatial Lag", line = 3)
+  
+  
+  # }
+  
+  title(main = c("BVic", "BYam", "H1", "H3")[i])
+  text(par('usr')[1]-par('plt')[1]*diff(par('usr')[1:2])/diff(par('plt')[1:2]), 
+       par('usr')[4]+(1-par('plt')[4])*diff(par('usr')[3:4])/diff(par('plt')[3:4]), 
+       labels = LETTERS[c(3,4,2,1)][i], adj = c(-0.2,1.2), xpd = T, cex = 1, font = 2)
+  # axis(3, 
+  #      at = c(0,3), 
+  #      labels = F, 
+  #      line = 0.5, 
+  #      tcl = 0.2)
+  # axis(3, 
+  #      at = mean(c(0,3)), 
+  #      labels = c("BVic", "BYam", "H1", "H3")[i], 
+  #      line = 0.5, 
+  #      tcl = -0.2)
+  
+  
+  
+  
+
+  
+
+}
+
+
+
+par(mar = c(5.1,6,5.1,4))
+image(x=1, 
+      y=c(as.numeric(factor(seq(-1,1,by=0.1)))), 
+      z=as.matrix(t(seq(-1,1,by=0.1))), 
+      xlab = "", 
+      ylab = "",
+      axes = F, 
+      col = mycols, 
+      breaks = mybreaks)
+box()
+axis(side = 2, 
+     at = c(as.numeric(factor(seq(-1,1,by=0.1))))[which(seq(-1,1,by=0.1)%in%seq(-1,1,by=0.2))]+c(rep(-0.5,5),0,rep(0.5,5)), 
+     labels = seq(-1,1,by=0.2),
+     tick = T,
+     las = 1)
+axis(side = 3, 
+     at = 1, 
+     labels = expression(paste("Correlation Coefficient, ", rho)), 
+     tick = F)
+
+dev.off()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

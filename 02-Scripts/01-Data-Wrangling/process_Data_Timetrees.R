@@ -2,11 +2,11 @@
 
 ## load data
 load("./01-Data/01-Processed-Data/alt/IQTREE_results.rds")
-iqtreealt <- iqtree
-names(iqtreealt)[4:ncol(iqtreealt)] <- paste0(names(iqtreealt)[4:ncol(iqtreealt)], "_alt")
-
-
-load("./01-Data/01-Processed-Data/iqtree_results.rds")
+# iqtreealt <- iqtree
+# names(iqtreealt)[4:ncol(iqtreealt)] <- paste0(names(iqtreealt)[4:ncol(iqtreealt)], "_alt")
+# 
+# 
+# load("./01-Data/01-Processed-Data/iqtree_results.rds")
 
 
 ## helper function
@@ -36,20 +36,20 @@ library(lubridate)
 
 
 
-## identify better tree from runs with outgroup and those without
-### use whichever tMRCA is 
-both <- full_join(iqtree, 
-                  iqtreealt) %>% 
-  select(subtype, season, location, matches("tMRCA")) %>% 
-  mutate(across(matches("tMRCA"), ~makeDecimalDate(trimws(.x)), .names = "{.col}_dd"), 
-         seasonnum = as.numeric(substr(season, 1,4)), 
-         across(matches("_dd"), ~.x-seasonnum-1, .names = "{.col}_diff2season"), 
-         dddiff = abs(tMRCA_dd-tMRCA_alt_dd), 
-         altcloser = (tMRCA_dd_diff2season < tMRCA_alt_dd_diff2season) & dddiff > 3)
-
-alt.keep <- which(both$altcloser)
-outgroup.keep <- which(!(1:nrow(both) %in% alt.keep))
-
+# ## identify better tree from runs with outgroup and those without
+# ### use whichever tMRCA is 
+# both <- full_join(iqtree, 
+#                   iqtreealt) %>% 
+#   select(subtype, season, location, matches("tMRCA")) %>% 
+#   mutate(across(matches("tMRCA"), ~makeDecimalDate(trimws(.x)), .names = "{.col}_dd"), 
+#          seasonnum = as.numeric(substr(season, 1,4)), 
+#          across(matches("_dd"), ~.x-seasonnum-1, .names = "{.col}_diff2season"), 
+#          dddiff = abs(tMRCA_dd-tMRCA_alt_dd), 
+#          altcloser = (tMRCA_dd_diff2season < tMRCA_alt_dd_diff2season) & dddiff > 3)
+# 
+# alt.keep <- which(both$altcloser)
+# outgroup.keep <- which(!(1:nrow(both) %in% alt.keep))
+# 
 
 
 
@@ -65,20 +65,21 @@ outgroup.keep <- which(!(1:nrow(both) %in% alt.keep))
 
 
 
+# 
+# 
+# names(iqtreealt) <- sub("_alt", "", names(iqtreealt))
+# 
+# 
+# ## subset data to include chosen time trees
+# iqtree.full <- bind_rows(iqtree[outgroup.keep,], 
+#                          iqtreealt[alt.keep,]) %>% 
+#   arrange(subtype, season, location)
+# 
+# 
 
 
-names(iqtreealt) <- sub("_alt", "", names(iqtreealt))
-
-
-## subset data to include chosen time trees
-iqtree.full <- bind_rows(iqtree[outgroup.keep,], 
-                         iqtreealt[alt.keep,]) %>% 
+iqtree.full <- iqtree %>%
   arrange(subtype, season, location)
-
-
-
-
-
 
 
 

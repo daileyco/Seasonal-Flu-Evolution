@@ -74,7 +74,8 @@ resulting trimmed and aligned sequences are read into r and rewritten to many fa
 note only strata with at least 3 sequences have fasta files
 
 ```{r}
-source("./02-Scripts/01-Data-Wrangling/prep_Files_FASTA2.R")
+source("./02-Scripts/01-Data-Wrangling/prep_Files_FASTA2alt.R")
+# source("./02-Scripts/01-Data-Wrangling/prep_Files_FASTA2_seasontrees.R")
 ```
 
 
@@ -82,21 +83,27 @@ stratum-specific fasta files (sets of sequences) are piped to IQTREE2 software f
 
 
 ```{r}
-source("./02-Scripts/04-Analysis/reconstruct_Phylogenies_with_IQTREE.R")
+source("./02-Scripts/04-Analysis/reconstruct_Phylogenies_with_IQTREEalt.R")
+source("./02-Scripts/04-Analysis/reconstruct_Phylogenies_with_IQTREE_seasontrees.R")
 ```
 
 
 read and combine iqtree tree and log files
 
 ```{r}
-source("./02-Scripts/01-Data-Wrangling/process_Data_IQTREE.R")
+source("./02-Scripts/01-Data-Wrangling/process_Data_IQTREEalt.R")
+source("./02-Scripts/01-Data-Wrangling/process_Data_IQTREE_seasontrees.R")
 ```
 
 
 
 ```{r}
-#may deprecate next script, need to check summary stats ok
-source("./02-Scripts/01-Data-Wrangling/process_Data_ACE.R")
+# #may deprecate next script, need to check summary stats ok
+# source("./02-Scripts/01-Data-Wrangling/process_Data_ACE.R")
+
+source("./02-Scripts/01-Data-Wrangling/process_Data_Timetrees.R")
+source("./02-Scripts/01-Data-Wrangling/process_Data_Timetrees_seasontrees.R")
+source("./02-Scripts/01-Data-Wrangling/process_Data_Timetrees_seasontrees_monophy.R")
 ```
 
 
@@ -114,6 +121,7 @@ the script calls both on each tree creating a dataframe with tree shape stats an
 
 # source("./02-Scripts/01-Data-Wrangling/generate_Tree_Summaries.R")
 source("./02-Scripts/01-Data-Wrangling/generate_Tree_Summaries2.R")
+source("./02-Scripts/01-Data-Wrangling/generate_Tree_Summaries_seasontrees.R")
 ```
 
 
@@ -167,8 +175,9 @@ source("./02-Scripts/03-Visualization/generate_Figures_TimeScalingBoxplots.R")
 ```
 
 ```{r}
-source("./02-Scripts/03-Visualization/generate_Figures_Coverage_Heatmap.R")
-source("./02-Scripts/03-Visualization/generate_Figures_Coverage_Heatmap_Sequences.R")
+source("./02-Scripts/03-Visualization/generate_Figure_Coverage_Heatmap.R")
+source("./02-Scripts/03-Visualization/generate_Figure_Coverage_Heatmap_Sequences.R")
+source("./02-Scripts/03-Visualization/generate_Figure_Coverage_Heatmap_TreeStats.R")
 ```
 
 

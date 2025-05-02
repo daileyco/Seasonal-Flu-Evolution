@@ -11,12 +11,19 @@ library(dplyr)
 
 
 # trees.full <- iqtree %>% filter(rep==0)
-trees.full <- smalltrees %>% filter(rep==0)
+# trees.full <- smalltrees %>% filter(rep==0)
+trees.full <- smalltrees %>% 
+  filter(scope == "season")
 
 
 
+# trees.season <- smalltrees %>%
+#   filter(!is.na(smalltree))
 trees.season <- smalltrees %>%
-  filter(!is.na(smalltree))
+  filter(scope == "cluster")
+
+trees.local <- smalltrees %>%
+  filter(scope == "local")
 
 
 
