@@ -1,13 +1,13 @@
 # script to process metadata
 
-## load data
+## Load data
 
-## packages
+## Packages
 library(readxl)
 library(dplyr)
 
 
-## helper functions
+## Helper Functions
 
 
 
@@ -200,11 +200,11 @@ meta <- meta %>%
 
 
 
-## save 
+## Save 
 save(meta, file = "./01-Data/01-Processed-Data/metadata.rds")
 
 
-## clean environment
+## Clean Environment
 rm(list = ls())
 gc()
 

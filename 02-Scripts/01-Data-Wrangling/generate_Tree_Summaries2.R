@@ -1,15 +1,24 @@
+# script to generate tree summaries data frame
 
 
+## Load Data
 # load("./01-Data/01-Processed-Data/iqtree_results.rds")
 load("./01-Data/01-Processed-Data/subtrees_df.rds")
 iqtree <- tree.df
+
+## Packages
+library(ape)
+library(dplyr)
+library(foreach)
+library(doParallel)
+
+
+## Helper Functions
 # source("./02-Scripts/02-Helper-Functions/root_Tree.R")
 source("./02-Scripts/02-Helper-Functions/summarize_Tree.R")
 
 
-library(ape)
-library(dplyr)
-
+## specify tree
 iqtree <- iqtree %>%
   mutate(tree = ifelse(is.na(smalltree), tree.newick2, smalltree))
 
@@ -27,8 +36,6 @@ iqtree <- iqtree %>%
 
 
 
-library(foreach)
-library(doParallel)
 
 cl <- makeCluster(mc <- getOption("cl.cores", 19))
 
@@ -73,10 +80,13 @@ smalltrees <- full_join(treesummaries,
 
 # iqtree <- cbind(iqtree, treesummaries)
 
+
+
+## Save
 save(smalltrees, file = "./01-Data/01-Processed-Data/smalltrees_summaries.rds")
 # save(iqtree, file = "./01-Data/01-Processed-Data/tree_summaries2.rds")
 
-
+## Clean Environment
 rm(list = ls())
 gc()
 

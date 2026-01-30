@@ -1,13 +1,17 @@
+# script to manage the tree summary data
 
-
-
+## Load Data
 # load("./01-Data/01-Processed-Data/tree_summaries.rds")
 load("./01-Data/01-Processed-Data/smalltrees_summaries.rds")
 
 
-
-
+## Packages
 library(dplyr)
+
+## Helper Functions
+
+
+## partition
 
 
 # trees.full <- iqtree %>% filter(rep==0)
@@ -47,10 +51,10 @@ smalltrees.df <- trees.season %>%
 
 
 
-
+## Save
 save(smalltrees.df, trees.full, file = "./01-Data/02-Analytic-Data/smalltrees_summaries.rdata")
 
-
+## Clean Environment
 rm(list=ls())
 gc()
 

@@ -1,7 +1,7 @@
+# function to root tree
 
 
-
-
+## function
 root_Tree <- function(this.tree.newick){
   
   require(dplyr)

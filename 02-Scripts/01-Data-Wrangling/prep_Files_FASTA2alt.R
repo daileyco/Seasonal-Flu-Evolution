@@ -19,7 +19,7 @@ library(lubridate)
 
 
 
-# set up
+## set up
 
 subtypes <- unique(seqs.df$subtype)
 

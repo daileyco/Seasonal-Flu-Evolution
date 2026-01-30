@@ -9,6 +9,15 @@ load("./01-Data/01-Processed-Data/alt/IQTREE_results.rds")
 # load("./01-Data/01-Processed-Data/iqtree_results.rds")
 
 
+
+
+## packages
+library(ape)
+library(dplyr)
+library(tibble)
+library(tidyr)
+library(lubridate)
+
 ## helper function
 
 
@@ -25,18 +34,9 @@ vsubstr <- Vectorize(substr, c("start", "stop"))
 
 
 
-## packages
-library(ape)
-library(dplyr)
-library(tibble)
-library(tidyr)
-library(lubridate)
 
 
-
-
-
-# ## identify better tree from runs with outgroup and those without
+## identify better tree from runs with outgroup and those without
 # ### use whichever tMRCA is 
 # both <- full_join(iqtree, 
 #                   iqtreealt) %>% 
@@ -365,11 +365,11 @@ for(i in 1:nrow(iqtree.full)){
 tree.df <- bind_rows(tree.list)
 
 
-##save
+## save
 save(tree.df, file = "./01-Data/01-Processed-Data/subtrees_df.rds")
 
 
-##clean environment
+## clean environment
 rm(list = ls())
 gc()
 

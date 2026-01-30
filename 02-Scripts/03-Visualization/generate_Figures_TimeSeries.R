@@ -1,13 +1,16 @@
+# generate figures showing MPD over time
 
-
+## Load Data
 # load("./01-Data/02-Analytic-Data/tree_summaries.rdata")
 
 load("./01-Data/02-Analytic-Data/smalltrees_summaries.rdata")
 
-
+## Packages
 library(dplyr)
 
+## Helper Functions
 
+## prep
 sts <- smalltrees.df %>%
   group_by(subtype, season.num, location) %>% 
   summarise(mpd = mean(mpd)) %>%
@@ -95,10 +98,10 @@ dev.off()
 
 
 
+## Save
 
 
-
-
+## Clean Environment
 rm(list=ls())
 gc()
 

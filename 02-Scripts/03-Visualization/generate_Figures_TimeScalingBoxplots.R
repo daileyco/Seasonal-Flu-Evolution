@@ -1,9 +1,19 @@
+# generate boxplots for mutation rates and ancestor dates
 
-
-
+## Load Data
 # load("./01-Data/02-Analytic-Data/mol_epi_reporting.rdata")
-library(dplyr)
+load("./01-Data/02-Analytic-Data/smalltrees_summaries.rdata")
 
+
+
+## Packages
+library(dplyr)
+library(lubridate)
+
+## Helper Functions
+
+
+## prep
 
 # molecular_epi_reporting %>% mutate(pdiff = p.ili-ifelse(is.nan(p.seqs), 0, p.seqs)) %>% group_by(season, location) %>% summarise(avgdiff = mean(pdiff, na.rm = T)) %>% ungroup() %>% mutate(across(c(season, location), ~factor(.x))) %>% View()
 
@@ -14,7 +24,6 @@ library(dplyr)
 
 
 
-load("./01-Data/02-Analytic-Data/smalltrees_summaries.rdata")
 
 
 
@@ -55,8 +64,6 @@ dev.off()
 
 
 
-library(lubridate)
-
 
 smalltrees.df <- smalltrees.df %>% 
   mutate(tmrca1 = date_decimal(tmrca), 
@@ -94,8 +101,10 @@ dev.off()
 # 
 # sts <- smalltrees.df %>% group_by(subtype, season, location) %>% summarise(n = sum(!is.na(mpd))) %>% ungroup()
 
+## Save
 
 
+## Clean Environment
 rm(list = ls())
 gc()
                                                                            

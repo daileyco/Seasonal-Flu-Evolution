@@ -74,6 +74,7 @@ resulting trimmed and aligned sequences are read into r and rewritten to many fa
 note only strata with at least 3 sequences have fasta files
 
 ```{r}
+# source("./02-Scripts/01-Data-Wrangling/prep_Files_FASTA2.R")
 source("./02-Scripts/01-Data-Wrangling/prep_Files_FASTA2alt.R")
 # source("./02-Scripts/01-Data-Wrangling/prep_Files_FASTA2_seasontrees.R")
 ```
@@ -83,16 +84,18 @@ stratum-specific fasta files (sets of sequences) are piped to IQTREE2 software f
 
 
 ```{r}
+# source("./02-Scripts/04-Analysis/reconstruct_Phylogenies_with_IQTREE.R")
 source("./02-Scripts/04-Analysis/reconstruct_Phylogenies_with_IQTREEalt.R")
-source("./02-Scripts/04-Analysis/reconstruct_Phylogenies_with_IQTREE_seasontrees.R")
+# source("./02-Scripts/04-Analysis/reconstruct_Phylogenies_with_IQTREE_seasontrees.R")
 ```
 
 
 read and combine iqtree tree and log files
 
 ```{r}
+# source("./02-Scripts/01-Data-Wrangling/process_Data_IQTREE.R")
 source("./02-Scripts/01-Data-Wrangling/process_Data_IQTREEalt.R")
-source("./02-Scripts/01-Data-Wrangling/process_Data_IQTREE_seasontrees.R")
+# source("./02-Scripts/01-Data-Wrangling/process_Data_IQTREE_seasontrees.R")
 ```
 
 
@@ -102,8 +105,8 @@ source("./02-Scripts/01-Data-Wrangling/process_Data_IQTREE_seasontrees.R")
 # source("./02-Scripts/01-Data-Wrangling/process_Data_ACE.R")
 
 source("./02-Scripts/01-Data-Wrangling/process_Data_Timetrees.R")
-source("./02-Scripts/01-Data-Wrangling/process_Data_Timetrees_seasontrees.R")
-source("./02-Scripts/01-Data-Wrangling/process_Data_Timetrees_seasontrees_monophy.R")
+# source("./02-Scripts/01-Data-Wrangling/process_Data_Timetrees_seasontrees.R")
+# source("./02-Scripts/01-Data-Wrangling/process_Data_Timetrees_seasontrees_monophy.R")
 ```
 
 
@@ -116,12 +119,12 @@ the script calls both on each tree creating a dataframe with tree shape stats an
 
 ```{r}
 #helper functions
-#"./02-Scripts/02-Helper-Functions/root_Tree.R"
-#"./02-Scripts/02-Helper-Functions/summarize_Tree.R"
+source("./02-Scripts/02-Helper-Functions/root_Tree.R")
+source("./02-Scripts/02-Helper-Functions/summarize_Tree.R")
 
 # source("./02-Scripts/01-Data-Wrangling/generate_Tree_Summaries.R")
 source("./02-Scripts/01-Data-Wrangling/generate_Tree_Summaries2.R")
-source("./02-Scripts/01-Data-Wrangling/generate_Tree_Summaries_seasontrees.R")
+# source("./02-Scripts/01-Data-Wrangling/generate_Tree_Summaries_seasontrees.R")
 ```
 
 
@@ -182,29 +185,6 @@ source("./02-Scripts/03-Visualization/generate_Figure_Coverage_Heatmap_TreeStats
 
 
 
-# Data Management II
-
-
-
-<!-- temporal lags of tree shape stats calculated here, 1&2 seasons lag -->
-
-<!-- calculate spatial lags (and spatiotemporal lags) -->
-<!-- - border sharing neighbors average -->
-<!-- - commuting neighbors average weighted by undirected commuter flow volume -->
-
-
-<!-- ```{r} -->
-<!-- #helper function -->
-<!-- #"./02-Scripts/02-Helper-Functions/generate_Spatial_Lag_Variable.R" -->
-
-<!-- source("./02-Scripts/01-Data-Wrangling/process_Data_Tree_Summaries2.R") -->
-<!-- ``` -->
-
-
-
-
-
-
 
 # Correlation Analysis
 
@@ -221,8 +201,8 @@ need to adjust correlations script to use all available data, it will
 
 
 ```{r}
-# #helper function
-# source("./02-Scripts/02-Helper-Functions/generate_Spatial_Lag_Variable.R")
+#helper function
+source("./02-Scripts/02-Helper-Functions/generate_Spatial_Lag_Variable.R")
 
 source("./02-Scripts/04-Analysis/correlate_Smalltrees.R")
 source("./02-Scripts/04-Analysis/correlate_Smalltrees_subset1520.R")
@@ -230,53 +210,8 @@ source("./02-Scripts/04-Analysis/correlate_Smalltrees_subset1520.R")
 
 
 ```{r}
-source("./02-Scripts/03-Visualization/generate_Figures_Cors_Heatmap.R")
+source("./02-Scripts/03-Visualization/generate_Figure_Cors_Heatmap.R")
 ```
-
-
-
-<!-- look at correlations between  -->
-<!-- - tree shape stats (removed) -->
-<!-- - subtypes -->
-<!-- - temporal autocorrelation of mpd -->
-<!-- - temporal subtype crosscorrelation of mpd -->
-<!-- - spatiotemporal autocorrelation of mpd -->
-<!-- - spatiotemporal subtype crosscorrelation of mpd -->
-
-<!-- ```{r} -->
-<!-- source("./02-Scripts/04-Analysis/compute_Correlations.R") -->
-<!-- ``` -->
-
-
-
-
-
-
-#old
-
-
-# Census of Available Sequences
-
-
-
-Feasibility check to see how many sequences available given stratifications
-```{r}
-source("./02-Scripts/01-Data-Wrangling/process_Data_Flu_Metadata.R")
-```
-
-
-
-```{r}
-
-# load("./03-Output/01-Tables/census.rdata")
-# library(dplyr)
-# library(flextable)
-# 
-# census %>% flextable() %>% autofit()
-# 
-# census.by.state %>% flextable() %>% autofit()
-```
-
 
 
 

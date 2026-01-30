@@ -1,7 +1,15 @@
 # ACS Data Processing
 
-library(readxl)
+## Load Data
 
+## Packages
+library(readxl)
+library(dplyr)
+
+## Helper Functions
+
+
+## read data
 #table for 2011 - 2015
 acs1115 <- read_xlsx(path = "./01-Data/00-Raw-Data/Commuting/table1-11-15.xlsx", 
                      skip = 7, 
@@ -37,7 +45,6 @@ acs1620 <- acs1620[-c({nrow(acs1620)-3}:nrow(acs1620)),]
 ##intrastate (but intercounty), 
 ##or intracounty
 
-library(dplyr)
 
 acs1115 <- acs1115 %>%
   mutate(`State FIPS Work` = substr(`State FIPS Work`, 2,3)) %>%
@@ -177,7 +184,10 @@ acs <- acs %>%
 #   summarise(`Workers in Commuting Flow` = sum(`Workers in Commuting Flow`, na.rm = TRUE)) %>%
 
 
+
+## Save
 save(acs, file = "./01-Data/01-Processed-Data/acs.rds")
 
+## Clean Environment
 rm(list = ls())
 gc()

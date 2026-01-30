@@ -1,8 +1,8 @@
+# calculate the average value among spatial neighbors
 
 
 
-
-
+## Function
 
 
 generate_Spatial_Lag <- function(this.df, 

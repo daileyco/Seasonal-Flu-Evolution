@@ -1,4 +1,6 @@
+# function to calculate summary statistics for trees
 
+## function
 
 summarize_Tree <- function(tree){
   

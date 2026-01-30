@@ -1,4 +1,64 @@
-# Project Skeleton
+# Seasonal Flu Evolution Repo
+
+Genomic epidemiology approaches are increasingly common in influenza surveillance, offering high-resolution insights into transmission patterns. By analyzing genomic data and reconstructing pathogen ancestry through phylogenetic methods, researchers can uncover transmission dynamics that traditional case-based approaches might fail to capture. Particularly, phylogenetic trees can shed light on the underlying transmission dynamics in an outbreak. With the accumulation of genomic data, it may now be possible to systematically characterize spatial variation in transmission dynamics of seasonal influenza in the United States. 
+Here, we explore the phylogenetic signals of local influenza outbreaks across the US from 2010-2020, focusing on type A (H3 and H1 subtypes) and type B (Victoria and Yamagata lineages) influenza viruses.
+
+This repo relates to Chapter 4 in [my PhD dissertation](https://esploro.libs.uga.edu/esploro/outputs/9949694128302959).
+
+Feel free to reach out to me (daileyco@gmail.com) or my PhD advisor, Justin Bahl (Justin.Bahl@uga.edu), with any questions. 
+
+## Repo Contents
+
+This repo contains scripts that: 
+
+- read and manage input data, 
+- reconstruct influenza phylogenetic trees,
+- identify, summarize, and correlate the phylogenetic signals among local transmission clusters, 
+- and generate various tables and figures showing important patterns in the data or analytical results.
+
+***NOTE: this repo was a work in progress at last update, so scripts may be broken***
+
+The scripts in this repo (and others of my creation) are highly modular. The scripts are designed to be run in a particular sequence that ensures the output(s) saved from upstream scripts are available for input(s) in downstream scripts. (See the bottom of this readme for a generic description of repo contents/structure.)
+
+There are two files that outline the order of scripts and give details on their individual purposes. 
+- "00-Information/script_census-[compile date].xlsx"
+- "04-Report/01-Notebook/reproducibility_notebook.rmd"
+
+The script census excel file gives details on scripts in this repo, including its purpose, inputs, package dependencies, and outputs. The creation of this excel file was automated (".02-Scripts/Script_Census.R"), so there are likely some errors in formatting or omitted information. Each script itself has some comments explaining the intent for sections of the code. 
+The reproducibility notebook is a combination of (1) a narrative explaining analysis steps and (2) a master script which sources/runs all of the main analysis scripts.
+
+A few of the columns from the script census are shown in the table below. (created with knitr::kable(census[,c(2,1,3)]))
+
+
+|Script Location     |Script Name                                  |Purpose                                                                                                                                              |
+|:-------------------|:--------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------|
+|01-Data-Wrangling   |process_Data_ACS.R                           |ACS Data Processing                                                                                                                                  |
+|01-Data-Wrangling   |process_Data_Spatial.R                       |Spatial Data Processing                                                                                                                              |
+|01-Data-Wrangling   |process_Data_GISAID.R                        |script to process metadata                                                                                                                           |
+|01-Data-Wrangling   |prep_Files_FASTA.R                           |Script to write fasta files for each subtype                                                                                                         |
+|01-Data-Wrangling   |process_Data_Alignments.R                    |Script to write fasta files                                                                                                                          |
+|01-Data-Wrangling   |prep_Files_FASTA2alt.R                       |Script to write fasta files                                                                                                                          |
+|04-Analysis         |reconstruct_Phylogenies_with_IQTREEalt.R     |script to iteratively call iqtree from command line                                                                                                  |
+|01-Data-Wrangling   |process_Data_IQTREEalt.R                     |script to read output files of iqtree into an r df                                                                                                   |
+|01-Data-Wrangling   |process_Data_Timetrees.R                     |script to partition full phylogenetic trees based on estimated date of internal nodes to identify subtrees whose mrca falls within collection season |
+|02-Helper-Functions |root_Tree.R                                  |function to root tree                                                                                                                                |
+|02-Helper-Functions |summarize_Tree.R                             |function to calculate summary statistics for trees                                                                                                   |
+|01-Data-Wrangling   |generate_Tree_Summaries2.R                   |script to generate tree summaries data frame                                                                                                         |
+|01-Data-Wrangling   |process_Data_Tree_Summaries.R                |script to manage the tree summary data                                                                                                               |
+|03-Visualization    |generate_Tables_Tree_Summaries.R             |generate summary tables                                                                                                                              |
+|03-Visualization    |generate_Flextables_SummaryTables.R          |script to format summary tables and save to word doc                                                                                                 |
+|03-Visualization    |generate_Figures_TimeSeries.R                |generate figures showing MPD over time                                                                                                               |
+|03-Visualization    |generate_Figures_TimeScalingBoxplots.R       |generate boxplots for mutation rates and ancestor dates                                                                                              |
+|03-Visualization    |generate_Figure_Coverage_Heatmap.R           |Figure heatmap showing proportion of cumulative seasonal ILI by week and state                                                                       |
+|03-Visualization    |generate_Figure_Coverage_Heatmap_Sequences.R |Figure heatmap                                                                                                                                       |
+|03-Visualization    |generate_Figure_Coverage_Heatmap_TreeStats.R |Figure heatmap showing proportion of cumulative seasonal ILI by week and state                                                                       |
+|02-Helper-Functions |generate_Spatial_Lag_Variable.R              |calculate the average value among spatial neighbors                                                                                                  |
+|04-Analysis         |correlate_Smalltrees.R                       |script to compute correlations using small trees data                                                                                                |
+|04-Analysis         |correlate_Smalltrees_subset1520.R            |script to compute correlations using small trees data                                                                                                |
+|03-Visualization    |generate_Figure_Cors_Heatmap.R               |Figure heatmap                                                                                                                                       |
+
+
+# Project Skeleton (my generic repo template)
 
 A basic repo template (directory structure) to be use as starting point for new projects.
 

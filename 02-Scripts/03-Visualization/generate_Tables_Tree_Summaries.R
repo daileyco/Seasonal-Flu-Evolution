@@ -1,19 +1,24 @@
+# generate summary tables
 
 
-
-
+## Load Data
 
 # load("./01-Data/02-Analytic-Data/tree_summaries.rdata")
 load("./01-Data/02-Analytic-Data/smalltrees_summaries.rdata")
 
-source("./02-Scripts/02-Helper-Functions/tabulator.R")
 
 
+## Packages
 library(tidyr)
 library(dplyr)
 library(lubridate)
 # library(flextable)
 
+## Helper Functions
+source("./02-Scripts/02-Helper-Functions/tabulator.R")
+
+
+## prep
 
 trees.full <- trees.full %>% 
   mutate(tmrca1 = decimal_date(as.Date(tMRCA))-season.num-1, 
@@ -66,13 +71,13 @@ table.sub1520 <- create.Table.1(c("ntips", "mpd", "imbalance.collessnorm", "avgl
 
 
 
-
+## Save
 save(list = ls(pattern = "^table[.]"), 
      file = "./03-Output/01-Tables/tables_tree_summaries.rdata")
 
 
 
-
+## Clean Environment
 rm(list=ls())
 gc()
 

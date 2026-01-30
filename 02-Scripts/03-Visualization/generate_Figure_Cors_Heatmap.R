@@ -13,6 +13,7 @@ library(tidyr)
 
 
 
+## figure set up
 
 
 # test <- cors %>% filter(subtype_x==subtype_y & tlag == 0 & slagtype!=c("Network") & slag!=0 & sign(cor50)==sign(cor2.5) & sign(cor50)==sign(cor97.5))
@@ -37,7 +38,6 @@ library(tidyr)
 
 
 
-## figure set up
 
 # seqs <- seqs.df %>%
 #   full_join(., 
